@@ -1,4 +1,18 @@
+import axios from "axios"
+import { useNavigate } from "react-router-dom"
 const RegisterPage = () => {
+
+  const navigate = useNavigate()
+
+//   const onSubmit = (data) => {axios.post('http://localhost:3002/api/Login',
+//   {
+//     userName : data.userName,
+//     password : data.password
+//   })
+//   .then({data}){
+//       navigate("/");
+//   }
+// }
 
   
   return(

@@ -1,7 +1,7 @@
 const express = require('express')
 const sequelize = require('sequelize')
 const bcrypt = require('bcrypt');
-const { signUp } = require('../controllers/userController');
+const { signUp, Login } = require('../controllers/userController');
 
 
 
@@ -15,6 +15,8 @@ const app = express();
 app.use(express.json())
 
 app.use('/api/signUp', signUp)
+
+app.use('/api/Login', Login)
 
 
 

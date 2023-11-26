@@ -1,16 +1,20 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
-const users = []
+let users = []
+
+console.log(users)
 
 const signUp = async (req, res) =>{
 
     try{
     const { userName, email, password } = req.body;
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(password, salt)
     const data = {
     userName,
     email,
-    password : await bcrypt.hash(password, 10)
+    password : hashedPassword
     }
     users.push(data)
 
@@ -22,6 +26,7 @@ const signUp = async (req, res) =>{
      res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
      console.log("user", JSON.stringify(users, null, 2));
      console.log(token);
+     console.log(users);
      //send users details
      return res.status(201).send(users);
    } 
@@ -34,6 +39,28 @@ const signUp = async (req, res) =>{
     }
 }
 
+
+const Login = async (req , res) => {
+   
+    const verify = users.find(data => data.userName === req.body.userName)
+
+    console.log(users)
+
+    if(verify == null){
+    return res.status(400).send("user not found")
+    }
+    try{
+    if(await bcrypt.compare(req.body.password, verify.password)){
+    res.send("success")
+    }else{
+    res.send("Not allowed")
+    }
+    }catch{
+    res.status(500).send("Error")
+    }
+}
+
 module.exports= {
-signUp
+signUp,
+Login
 }
