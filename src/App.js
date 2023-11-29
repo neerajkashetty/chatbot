@@ -1,6 +1,7 @@
 const express = require('express')
 const sequelize = require('sequelize')
 const bcrypt = require('bcrypt');
+const cors = require('cors'); 
 const { signUp, Login } = require('../controllers/userController');
 
 
@@ -13,6 +14,10 @@ const app = express();
 
 //telling the app to accept the json data else it will throw an error of the typeError cannot read properties of undefined
 app.use(express.json())
+
+//When a web application running at one origin (e.g., http://localhost:3000) tries to make a request to a different origin (e.g., http://localhost:3002), the browser enforces a security policy known as the Same-Origin Policy.
+//To resolve this issue, you need to configure your server (http://localhost:3002) to include the appropriate CORS headers in its responses.
+app.use(cors())
 
 app.use('/api/signUp', signUp)
 

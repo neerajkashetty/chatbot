@@ -1,18 +1,43 @@
 import axios from "axios"
+import { useEffect , useCallback } from "react"
 import { useNavigate } from "react-router-dom"
+import {useForm} from "react-hook-form"
+
+
 const RegisterPage = () => {
 
+  const {
+    register,
+    handleSubmit,
+  } = useForm();
+
+ // const [products , setProducts] = useState([]);
   const navigate = useNavigate()
 
-//   const onSubmit = (data) => {axios.post('http://localhost:3002/api/Login',
-//   {
-//     userName : data.userName,
-//     password : data.password
-//   })
-//   .then({data}){
-//       navigate("/");
-//   }
-// }
+  const onSubmit = useCallback(async (data) => {
+    try {
+      const response = await axios.post('http://localhost:3002/api/signUp', {
+        firstName: data.firstName,
+        email: data.email,
+        password: data.password,
+      });
+
+      console.log(response);
+
+      if (response.data.success) {
+        navigate('/login');
+      } else {
+
+        console.error("Registration failed:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error submitting registration:", error);
+    }
+  }, [navigate]);
+
+useEffect(()=>{
+  onSubmit();
+}, [onSubmit]);
 
   
   return(
@@ -23,7 +48,7 @@ const RegisterPage = () => {
   </h2>
 </div>
 <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-  <form className="space-y-6" action="#" method="POST">
+  <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
     <div>
       <label
         htmlFor="firstName"
@@ -37,6 +62,7 @@ const RegisterPage = () => {
           name="firstName"
           type="text"
           autoComplete="given-name"
+          {...register("firstName", { required: true })}
           required
           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
         />
@@ -75,6 +101,7 @@ const RegisterPage = () => {
           name="email"
           type="email"
           autoComplete="email"
+          {...register("email", { required: true })}
           required
           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
         />
@@ -94,6 +121,7 @@ const RegisterPage = () => {
           name="password"
           type="password"
           autoComplete="new-password"
+          {...register("password", { required: true })}
           required
           className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
         />

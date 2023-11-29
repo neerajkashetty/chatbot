@@ -8,13 +8,15 @@ console.log(users)
 const signUp = async (req, res) =>{
 
     try{
-    const { userName, email, password } = req.body;
-    const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(password, salt)
+    const { firstName, email, password } = req.body;
+
+    console.log(firstName)
+   // const salt = await bcrypt.genSalt(10)
+   // const hashedPassword = await bcrypt.hash(password, salt)
     const data = {
-    userName,
+    firstName,
     email,
-    password : hashedPassword
+    password 
     }
     users.push(data)
 
@@ -42,7 +44,7 @@ const signUp = async (req, res) =>{
 
 const Login = async (req , res) => {
    
-    const verify = users.find(data => data.userName === req.body.userName)
+    const verify = users.find(data => data.userName === req.body.firstName)
 
     console.log(users)
 
