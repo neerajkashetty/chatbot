@@ -1,6 +1,29 @@
 import { Link} from 'react-router-dom';
+import { useEffect, useCallback, useState } from 'react';
+import {useForm} from 'react-hook-form';
+import axios from 'axios';
+import { response } from 'express';
 
 const LoginPage = () => {
+
+  const {register , handlesubmit, formdata} = useForm()
+
+  const onSubmit = (data) => {
+
+    axios.post('http://localhost:3002/api/Login', {
+      firstName : data.firstName,
+      password : data.password
+    })
+
+    console.log(response)
+  }
+
+useEffect(()=>{
+  onSubmit();
+
+},[onSubmit])
+
+
 
   return (
     <>
