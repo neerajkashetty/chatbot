@@ -3,22 +3,21 @@ const jwt = require('jsonwebtoken')
 
 let users = []
 
-console.log(users)
 
 const signUp = async (req, res) =>{
 
     try{
     const { firstName, email, password } = req.body;
 
-    console.log(firstName)
-   // const salt = await bcrypt.genSalt(10)
-   // const hashedPassword = await bcrypt.hash(password, salt)
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(password, salt)
     const data = {
     firstName,
     email,
-    password 
+    password : hashedPassword
     }
     users.push(data)
+
 
     if (users.length > 0) {
      let token = jwt.sign({ id: '1' }, 'dsalkdndlkask', {
@@ -44,7 +43,7 @@ const signUp = async (req, res) =>{
 
 const Login = async (req , res) => {
    
-    const verify = users.find(data => data.userName === req.body.firstName)
+    const verify = users.find(data => data.email === req.body.email)
 
     console.log(users)
 
@@ -52,8 +51,24 @@ const Login = async (req , res) => {
     return res.status(400).send("user not found")
     }
     try{
-    if(await bcrypt.compare(req.body.password, verify.password)){
-    res.send("success")
+    if(verify)
+    {
+    const isSame = await bcrypt.compare(req.body.password, verify.password)
+    if(isSame){
+      let token = jwt.sign({ id: "1" }, "dsalkdndlkask", {
+        expiresIn: 1 * 24 * 60 * 60 * 1000,
+      });
+      res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
+      // console.log("user", JSON.stringify(verify, null, 2));
+       console.log(token);
+       return res.json({
+        sucess : true,
+        data : {
+          username : verify.username,
+          authtoken : token
+        }
+       });
+    }
     }else{
     res.send("Not allowed")
     }

@@ -1,27 +1,42 @@
 import { Link} from 'react-router-dom';
-import { useEffect, useCallback, useState } from 'react';
+import { useEffect, useCallback } from 'react';
 import {useForm} from 'react-hook-form';
 import axios from 'axios';
-import { response } from 'express';
 
 const LoginPage = () => {
+  const {
+    register, 
+    handleSubmit
+  } = useForm();
 
-  const {register , handlesubmit, formdata} = useForm()
-
-  const onSubmit = (data) => {
-
-    axios.post('http://localhost:3002/api/Login', {
-      firstName : data.firstName,
-      password : data.password
-    })
-
-    console.log(response)
-  }
-
+  const onSubmit = useCallback(async (data) => {
+    try {
+      if (data && data.email && data.password) {
+        const response = await axios.post('http://localhost:3002/api/Login', {
+          email: data.email,
+          password: data.password,
+        });
+  
+        if (response.status === 200) {
+          localStorage.clear()
+          localStorage.setItem("token", JSON.stringify(response.data.data.authtoken))
+          window.location = "/home"
+        } else {
+          console.error('Login issues', response.statusText);
+        }
+  
+        console.log(response);
+      } else {
+        console.error('Invalid form data:', data);
+      }
+    } catch (error) {
+      console.error('An error occurred:', error.message);
+    }
+  }, []);
 useEffect(()=>{
   onSubmit();
-
-},[onSubmit])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+},[])
 
 
 
@@ -34,7 +49,7 @@ useEffect(()=>{
           </h2>
         </div>
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" action="#" method="POST">
+          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <div>
               <label
                 for="email"
@@ -48,6 +63,7 @@ useEffect(()=>{
                   name="email"
                   type="email"
                   autocomplete="email"
+                  {...register('email', {required: true}) }
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
@@ -76,20 +92,19 @@ useEffect(()=>{
                   name="password"
                   type="password"
                   autocomplete="current-password"
+                  {...register('password',{required:true})}
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
-            <div>
-            <Link to="/home">
+            <div> 
     <button
       type="submit"
       className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
     >
       Sign in
     </button>
-  </Link>
             </div>
           </form>
         </div>
