@@ -14,8 +14,7 @@ root.render(
       <Routes>
         <Route path="/login" element={<LoginPage/>} />
         <Route path="/register" element={<RegisterPage/>} />
-         <Route path="home" element={<ProtectedRoute/>} > 
-        <Route path="/home" element={<Home/>} />
+         <Route path = "/home" element= {<ProtectedRoute><Home/></ProtectedRoute>}> 
         </Route> 
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>

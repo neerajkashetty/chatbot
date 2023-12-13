@@ -18,9 +18,9 @@ const ProtectedRoute = (props) => {
 useEffect(() => {
     checkusertoken();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-}, );
+}, [Loggedin]);
 
-return Loggedin ? <>{props.children}</> : null;
+ return Loggedin ? <>{props.children}</> : null;
 
 }
 export default ProtectedRoute;
