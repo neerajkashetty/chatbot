@@ -1,8 +1,10 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const fs = require("fs")
 
 let users = []
 
+const secretKey = fs.readFileSync('./private.key', 'utf-8');
 
 const signUp = async (req, res) =>{
 
@@ -20,7 +22,7 @@ const signUp = async (req, res) =>{
 
 
     if (users.length > 0) {
-     let token = jwt.sign({ id: '1' }, 'dsalkdndlkask', {
+     let token = jwt.sign({ id: '1' }, secretKey, {
        expiresIn: 1 * 24 * 60 * 60 * 1000,
      });
 
