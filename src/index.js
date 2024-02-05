@@ -12,8 +12,8 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <Router  >
       <Routes>
-        <Route path="/login" element={<LoginPage/>} />
-        <Route path="/register" element={<RegisterPage/>} />
+        {/* <Route path="/login" element={<LoginPage/>} />
+        <Route path="/register" element={<RegisterPage/>} /> */}
          <Route path = "/home" element= {<ProtectedRoute><Home/></ProtectedRoute>}> 
         </Route> 
         <Route path="*" element={<Navigate to="/login" />} />

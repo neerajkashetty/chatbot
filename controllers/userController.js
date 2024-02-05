@@ -62,7 +62,7 @@ const Login = async (req , res) => {
       });
       res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
       // console.log("user", JSON.stringify(verify, null, 2));
-       console.log(token);
+      // console.log(token);
        return res.json({
         sucess : true,
         data : {
