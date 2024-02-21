@@ -1,12 +1,9 @@
 const express = require('express')
-const sequelize = require('sequelize')
-const bcrypt = require('bcrypt');
+const {sequelize} = require('../sequelize/models')
 const cors = require('cors'); 
 const { signUp, Login } = require('../controllers/userController');
 
 
-
-const users = []
 
 
 //creating the instance of the express with the variable app
@@ -42,8 +39,20 @@ app.use('/api/Login', Login)
 // }
 // })
 
-
-app.listen(3002,() => {
-
-    console.log("Server running on the port 3002")
-} )
+const connectDB = async () => {
+    try {
+      await sequelize.authenticate();
+      console.log("Successfully connected to database.");
+    } catch (error) {
+      console.log("An error occured while connecting to database, \n", error);
+      process.exit(1);
+    }
+  };
+  (async () => {
+    await connectDB();
+  
+    app.listen(3002, () =>
+      console.log("Server running on the port",  3002)
+    );
+  })();
+  

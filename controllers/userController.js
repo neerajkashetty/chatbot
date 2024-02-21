@@ -1,33 +1,47 @@
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const db = require('../sequelize/models')
+const User = db.User
+const fs = require("fs");
 
-let users = []
+
 
 
 const signUp = async (req, res) =>{
 
     try{
-    const { firstName, email, password } = req.body;
+    const { firstName, lastName, email, password } = req.body;
+
+    
+    const user = await User.findOne({
+      where:{
+        email: email
+      }
+    })
+
+    if(user){
+      return res.json({error: "Email Already taken"});
+    }
 
     const salt = await bcrypt.genSalt(10)
     const hashedPassword = await bcrypt.hash(password, salt)
     const data = {
     firstName,
+    lastName,
     email,
     password : hashedPassword
     }
-    users.push(data)
 
+    const usertable = await User.create(data)
+   
 
-    if (users.length > 0) {
+    if (usertable) {
      let token = jwt.sign({ id: '1' }, 'dsalkdndlkask', {
        expiresIn: 1 * 24 * 60 * 60 * 1000,
      });
 
      res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
-     console.log("user", JSON.stringify(users, null, 2));
-     console.log(token);
-     console.log(users);
+    
      //send users details
      return res.status(201).send(users);
    } 
@@ -42,21 +56,24 @@ const signUp = async (req, res) =>{
 
 
 const Login = async (req , res) => {
+  try{
    
-    const verify = users.find(data => data.email === req.body.email)
+    const {email , password} = req.body;
+    const privateKey = fs.readfileSync("./private.key", "utf8");
 
-    console.log(users)
-
-    if(verify == null){
-    return res.status(400).send("user not found")
-    }
-    try{
-    if(verify)
-    {
-    const isSame = await bcrypt.compare(req.body.password, verify.password)
+    const user = await User.findOne({
+      where:{
+        email : email
+      }
+    })
+   
+  if(user){
+    const isSame = await bcrypt.compare(password, user.password)
     if(isSame){
-      let token = jwt.sign({ id: "1" }, "dsalkdndlkask", {
+      let token = jwt.sign({ id: "1" }, privateKey, {
         expiresIn: 1 * 24 * 60 * 60 * 1000,
+        algorithm: "RS256",
+        audience: "users"
       });
       res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
       // console.log("user", JSON.stringify(verify, null, 2));
@@ -64,15 +81,18 @@ const Login = async (req , res) => {
        return res.json({
         sucess : true,
         data : {
-          username : verify.username,
+          username : user.username,
           authtoken : token
         }
        });
+  }
     }
-    }else{
-    res.send("Not allowed")
+    else{
+    res.json({sucess: false , message: "No user with the email"})
     }
-    }catch{
+  }
+    
+    catch{
     res.status(500).send("Error")
     }
 }
