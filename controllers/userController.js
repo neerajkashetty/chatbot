@@ -12,8 +12,8 @@ const signUp = async (req, res) =>{
     try{
     const { firstName, lastName, email, password } = req.body;
 
-    
     const user = await User.findOne({
+      attributes: ['id', 'username', 'password', 'email', 'firstName', 'lastName'],
       where:{
         email: email
       }
@@ -28,6 +28,7 @@ const signUp = async (req, res) =>{
     const data = {
     firstName,
     lastName,
+    username: "kasheenj",    
     email,
     password : hashedPassword
     }
