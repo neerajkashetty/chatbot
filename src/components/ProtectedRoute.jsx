@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import {validateAuthToken} from "../utils/validateAuthToken";
 
 const ProtectedRoute = (props) => {
     const navigate = useNavigate();
@@ -11,6 +12,7 @@ const ProtectedRoute = (props) => {
             navigate('/login')
         }else{
             setLoggedin(true)
+            validateAuthToken(userToken)
         }
     } 
     
