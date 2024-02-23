@@ -1,8 +1,9 @@
 const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
+const JWT = require('jsonwebtoken')
 const db = require('../sequelize/models')
 const User = db.User
 const fs = require("fs");
+const { response } = require('express');
 
 
 
@@ -23,29 +24,38 @@ const signUp = async (req, res) =>{
       return res.json({error: "Email Already taken"});
     }
 
-    const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(password, salt)
+    const saltRounds = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, saltRounds)
+    console.log("hvjhjhjh",hashedPassword)
     const data = {
     firstName,
     lastName,
-    username: "kasheenj",    
+    username:"ahkp",    
     email,
-    password : hashedPassword
+    password
     }
 
     const usertable = await User.create(data)
    
 
     if (usertable) {
-     let token = jwt.sign({ id: '1' }, 'dsalkdndlkask', {
+     let token = JWT.sign({ id: '1' }, 'dsalkdndlkask', {
        expiresIn: 1 * 24 * 60 * 60 * 1000,
      });
 
      res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
     
      //send users details
-     return res.status(201).send(users);
-   } 
+     return res.json({
+      sucess: true,
+      data :{
+        firstName,
+        lastName,
+        email,
+        token
+      }
+     })
+   }
    else {
      return res.status(409).send("Details are not correct");
     }
@@ -60,21 +70,26 @@ const Login = async (req , res) => {
   try{
    
     const {email , password} = req.body;
-    const privateKey = fs.readfileSync("./private.key", "utf8");
+    //const privateKey = fs.readfileSync("./private.key", "utf8");
+    console.log("entered", req.body)
 
     const user = await User.findOne({
       where:{
         email : email
       }
+      
     })
    
   if(user){
-    const isSame = await bcrypt.compare(password, user.password)
-    if(isSame){
-      let token = jwt.sign({ id: "1" }, privateKey, {
+    console.log("check", user.password , user.email)
+    console.log("check", email)
+    const encrypted = user.password
+  // const isSame = await bcrypt.compare(password, encrypted)
+
+    if(password === encrypted){
+      console.log("check1")
+      let token = JWT.sign({ id: "1" }, 'dsalkdndlkask', {
         expiresIn: 1 * 24 * 60 * 60 * 1000,
-        algorithm: "RS256",
-        audience: "users"
       });
       res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
       // console.log("user", JSON.stringify(verify, null, 2));
@@ -93,8 +108,8 @@ const Login = async (req , res) => {
     }
   }
     
-    catch{
-    res.status(500).send("Error")
+    catch(error){
+    res.status(500).send("Error" + error.message)
     }
 }
 
