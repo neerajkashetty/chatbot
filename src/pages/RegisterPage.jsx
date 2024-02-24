@@ -22,9 +22,9 @@ const RegisterPage = () => {
         password: data.password,
       });
 
-      console.log(response.data);
+//      console.log(response.data);
 
-      if (response.status === 201) {
+      if (response.status === 200) {
         navigate('/login');
       } else {
 

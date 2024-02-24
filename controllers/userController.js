@@ -4,6 +4,7 @@ const db = require('../sequelize/models')
 const User = db.User
 const fs = require("fs");
 const { response } = require('express');
+const {generateFromEmail, generateUsername} = require("unique-username-generator")
 
 
 
@@ -12,6 +13,11 @@ const signUp = async (req, res) =>{
 
     try{
     const { firstName, lastName, email, password } = req.body;
+
+    const username = generateFromEmail(
+      email,
+      4
+    )
 
     const user = await User.findOne({
       attributes: ['id', 'username', 'password', 'email', 'firstName', 'lastName'],
@@ -25,12 +31,12 @@ const signUp = async (req, res) =>{
     }
 
     const saltRounds = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, saltRounds)
-    console.log("hvjhjhjh",hashedPassword)
+    //const hashedPassword = await bcrypt.hash(password, saltRounds)
+    //console.log("hvjhjhjh",hashedPassword)
     const data = {
     firstName,
     lastName,
-    username:"ahkp",    
+    username: username,    
     email,
     password
     }
@@ -71,7 +77,7 @@ const Login = async (req , res) => {
    
     const {email , password} = req.body;
     //const privateKey = fs.readfileSync("./private.key", "utf8");
-    console.log("entered", req.body)
+   // console.log("entered", req.body)
 
     const user = await User.findOne({
       where:{
@@ -81,19 +87,17 @@ const Login = async (req , res) => {
     })
    
   if(user){
-    console.log("check", user.password , user.email)
-    console.log("check", email)
     const encrypted = user.password
   // const isSame = await bcrypt.compare(password, encrypted)
 
     if(password === encrypted){
-      console.log("check1")
+    //  console.log("check1")
       let token = JWT.sign({ id: "1" }, 'dsalkdndlkask', {
         expiresIn: 1 * 24 * 60 * 60 * 1000,
       });
       res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
       // console.log("user", JSON.stringify(verify, null, 2));
-       console.log(token);
+     //  console.log(token);
        return res.json({
         sucess : true,
         data : {
