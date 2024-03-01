@@ -135,11 +135,39 @@ const Home = () => {
 
       </div>
 
-        {/* <div className='flex mb-4'>
-        <h2 className="text-lg font-semibold mb-4 mt-72 text-blue-400">
+        <div className='flex mb-4'>
+        <h2 className="text-lg font-semibold mb-4 mt-52 ml-16 text-blue-400">
           Knowledge Base
         </h2>
-        </div> */}
+        </div> 
+        <div className='rounded-md ml-10 w-56 bg-gray-50  h-1/2'>
+          <p className='font-semibold text-center hover:subpixel-antialiased'>Documents for your bot</p>
+          <p className='text-gray-400 text-xs non-italic px-8 pt-4 font-medium '>Please upload the documents in here, the maximum file size for each upload is 5MB.</p>
+        <div className=' p-8 mt-12 ml-12 rounded-md border-2 border-blue-300 w-1/2 h-1/4 border-dotted outline-4'>
+          <div className='ml-2'>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+        </div>
+        <div className='absoulte  justify-start align-text-top w-16 '>
+        <p className='text-xs text-blue-300 font-semibold '>Add Pdf's and Doc's</p>
+        </div>
+        </div>
+        <div className='w-56 h-1/3 bg-gray-50 mt-10 rounded-b-md'>
+          <h3 className='text-xs  font-semibold text-gray-500'>Uploaded Documents:</h3>
+          <hr className="border-gray-400 border-dashed my-1 mt-2" />
+          <div className='flex'>
+          <p className='flex text-xs font-bold text-gray-500 mt-4'>1.Machine_learning.doc </p>
+          <div  className='mt-3'>
+          <svg className='mt-4' xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
+          </svg>
+          </div>
+          </div>
+          
+          </div>  
+
+        </div>
       </div>
     </div>
   );

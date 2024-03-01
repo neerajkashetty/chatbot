@@ -7,6 +7,11 @@ module.exports = {
         blue:{
           700 : "#E7F5FE"
         }
+      },
+
+      fontSize:{
+        xs:'0.7rem'
+
       }
     },
   },
