@@ -31,7 +31,7 @@ const Home = () => {
 
   return (
     <div className="flex h-screen bg-black-300">
-      <div className="w-1/5 bg-white p-4 border-r border-gray-200 font-mono">
+      <div className="w-1/5 bg-white p-4 border-r border-gray-200 font-mono overflow-y-auto no-scrollbar">
         <h2 className="text-lg font-semibold mb-4 text-gray-700">
           Recent Conversations
         </h2>
@@ -44,36 +44,60 @@ const Home = () => {
           </div>
         ))}
       </div>
-      
+
       <div className="flex-1 md:w-96 mb-8 bg-white p-4 flex flex-col justify-end">
-      {messages.map((message, index) => (
-        <div key={index} className="bg-blue-300 text-sm font-semibold px-3 py-1 rounded-md border border-solid border-neutral-300 mb-8 w-96 ml-72 items-stretch">
-          {message}
+        <div className="overflow-y-auto no-scrollbar max-h-320">
+          {messages.map((message, index) => (
+            <div key={index} className="container max-w-2xl mx-auto py-1">
+              <div className="flex items-center justify-end">
+                <div className="bg-gray-200 p-4 my-3 rounded-lg flex-1">
+                  <p className="text-sm text-gray-600">
+                    <span className="font-bold">{`User`}</span> {/* Add sender's name here */}
+                  </p>
+                  <p className="text-lg">{message}</p>
+                </div>
+                <div className="w-3 overflow-hidden ">
+                  <div className="h-4 bg-gray-200 rotate-45 transform origin-top-left rounded-sm"></div>
+                </div>
+              </div>
+              <div className="flex items-center justify-start">
+                <div className="w-3 overflow-hidden">
+                  <div className="h-4 bg-blue-200 rotate-45 transform origin-bottom-right rounded-sm"></div>
+                </div>
+                <div className="bg-blue-200 p-4 rounded-lg flex-1">
+                  <p className="text-sm text-gray-600">
+                    <span className="font-bold">Chatbot</span>
+                  </p>
+                  <p className="text-lg">I can't answer anything right now!</p>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
-  <div className='bottom flex-col'>
-    <div className='ml-32 w-2/3 relative bottom-2 flex flex-wrap items-stretch border-r '>
-      <input
-        type='search'
-        className='relative rounded-lg m-0 -mr-0.5 block w-[1px] min-w-0 flex-auto  border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary'
-        placeholder='Tell us your query'
-        value={searchTerm}
-        onChange={handleChange}
-        onKeyPress={(e) => {
-          if(e.key === 'Enter'){
-            handleSend();
-          }
-        }}
-      />
-      <button
-        className="relative bg-gray-200 flex items-center rounded-lg bg-primary px-6 py-2.5 text-xs font-medium uppercase leading-tight text-black shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 focus-visible:outline-indigo-600 active:shadow-lg"
-        onClick={handleSend}
-     >
-        Send
-      </button>
-    </div> 
-  </div>
-</div>
+
+        <div className="bottom flex-col">
+          <div className="ml-32 w-2/3 relative bottom-2 flex flex-wrap items-stretch border-r my-4">
+            <input
+              type="search"
+              className="relative rounded-lg m-0 -mr-0.5 block w-[1px] min-w-0 flex-auto  border border-solid border-neutral-300 bg-transparent bg-clip-padding px-3 py-[0.25rem] text-base font-normal leading-[1.6] text-neutral-700 outline-none transition duration-200 ease-in-out focus:z-[3] focus:border-primary focus:text-neutral-700 focus:shadow-[inset_0_0_0_1px_rgb(59,113,202)] focus:outline-none dark:border-neutral-600 dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:focus:border-primary"
+              placeholder="Tell us your query"
+              value={searchTerm}
+              onChange={handleChange}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter') {
+                  handleSend();
+                }
+              }}
+            />
+            <button
+              className="relative bg-gray-200 flex items-center rounded-lg bg-primary ml-2 px-6 py-2.5 text-xs font-medium uppercase leading-tight text-black shadow-md transition duration-150 ease-in-out hover:bg-primary-700 hover:shadow-lg focus:bg-primary-700 focus:shadow-lg focus:outline-none focus:ring-0 active:bg-primary-800 focus-visible:outline-indigo-600 active:shadow-lg"
+              onClick={handleSend}
+            >
+              Send
+            </button>
+          </div>
+        </div>
+      </div>
 
 
       <div className="w-1/5 bg- p-4 border-l border-gray-200">
