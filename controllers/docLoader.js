@@ -1,12 +1,11 @@
 
 const docLoader = async (req, res) => {
-  console.log("jbfkjab");
   try {
     const { userInput } = req.body;
     const { LlamaCpp } = await import("@langchain/community/llms/llama_cpp");
     const { RetrievalQAChain } = await import("langchain/chains");
-    const { HNSWLib } = await import(
-      "@langchain/community/vectorstores/hnswlib"
+    const { FaissStore } = await import(
+      "@langchain/community/vectorstores/faiss"
     );
     const { LlamaCppEmbeddings } = await import(
       "@langchain/community/embeddings/llama_cpp"
@@ -15,12 +14,17 @@ const docLoader = async (req, res) => {
       "langchain/text_splitter"
     );
 
+    
     const llamaPath = "./LLM/llama-2-7b-chat.Q2_K.gguf";
-    const pdfpath = "./LLM/KnowledgeBase/Bharath_Varma_Module_06.pdf";
+    const pdfpath = "./LLM/KnowledgeBase/test.pdf";
     const fs = require("fs");
-    const pdf = require("pdf-parse");
+    const {PDFLoader} = await import("langchain/document_loaders/fs/pdf")
+
+    const loader = new PDFLoader(llamaPath)
 
     const model = new LlamaCpp({ modelPath: llamaPath, temperature: 0.1 });
+
+    console.log("kjefhejw")
 
     async function extractTextfromPdf(pdfpath) {
       console.log(pdfpath);
@@ -41,6 +45,8 @@ const docLoader = async (req, res) => {
 
       const output = await splitter.createDocuments([pdfContent]);
 
+      const docs = await loadQAMapReduceChain.load
+
       const embeddings = new LlamaCppEmbeddings({
         modelPath: llamaPath,
         embedding: output
@@ -48,15 +54,15 @@ const docLoader = async (req, res) => {
 
    //   const response = await embeddings.embedDocuments(pdfContent);
 
-      const vectorstore = await HNSWLib.fromDocuments(output, embeddings); 
+      const vectorstore = await FaissStore.fromDocuments(output, embeddings); 
 
-      const result = await vectorstore.addVectors
+      const result = await vectorstore.similaritySearch("testing", 1)
       console.log(result)
 
-      const chain = RetrievalQAChain.fromLLM(
-        model,
-        vectorstore.asRetriever()
-      );
+      // const chain = RetrievalQAChain.fromLLM(
+      //   model,
+      //   vectorstore.asRetriever()
+      // );
 
     //   console.log(chain)
 

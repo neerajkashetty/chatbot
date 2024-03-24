@@ -2,6 +2,7 @@ const express = require('express')
 const {sequelize} = require('../sequelize/models')
 const cors = require('cors'); 
 const { signUp, Login } = require('../controllers/userController');
+const {docLoader} = require("../controllers/docLoader");
 
 
 
@@ -20,6 +21,7 @@ app.use('/api/signUp', signUp)
 
 app.use('/api/Login', Login)
 
+app.use('/api/ai', docLoader)
 
 
 // app.get('/user', (req, res) => {
