@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Menu } from '@headlessui/react';
+import axios from 'axios';
 
 
 const Home = () => {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [messages, setMessages] = useState([]);
+  const [data, setData] = useState(null);
 
   const handleChange = (event) => {
     setSearchTerm(event.target.value);
@@ -16,10 +18,21 @@ const Home = () => {
     window.location = "/Login"
   }
 
-  const handleSend = () => {
+  const handleSend = async () => {
+    try{ const response = await axios.post("http://localhost:3002/api/ai",{
+      userInput: searchTerm
+    })
+
+    setData(response.data.res)
+
     if (searchTerm.trim() !== '') {
       setMessages([...messages, searchTerm]);
-      setSearchTerm('');
+      setSearchTerm('');}
+    
+    }catch(error){
+
+      console.log(error)
+
     }
   };
 
@@ -49,6 +62,7 @@ const Home = () => {
       {messages.map((message, index) => (
         <div key={index} className="bg-blue-300 text-sm font-semibold px-3 py-1 rounded-md border border-solid border-neutral-300 mb-8 w-96 ml-72 items-stretch">
           {message}
+          {data}
         </div>
       ))}
   <div className='bottom flex-col'>

@@ -7,9 +7,7 @@ const docLoader = async (req, res) => {
     const { FaissStore } = await import(
       "@langchain/community/vectorstores/faiss"
     );
-    const { LlamaCppEmbeddings } = await import(
-      "@langchain/community/embeddings/llama_cpp"
-    );
+    const {HuggingFaceTransformersEmbeddings} = await import("@langchain/community/embeddings/hf_transformers")
     const { RecursiveCharacterTextSplitter } = await import(
       "langchain/text_splitter"
     );
@@ -18,13 +16,11 @@ const docLoader = async (req, res) => {
     const llamaPath = "./LLM/llama-2-7b-chat.Q2_K.gguf";
     const pdfpath = "./LLM/KnowledgeBase/test.pdf";
     const fs = require("fs");
-    const {PDFLoader} = await import("langchain/document_loaders/fs/pdf")
+    const pdf = require("pdf-parse");
 
-    const loader = new PDFLoader(llamaPath)
+    
 
     const model = new LlamaCpp({ modelPath: llamaPath, temperature: 0.1 });
-
-    console.log("kjefhejw")
 
     async function extractTextfromPdf(pdfpath) {
       console.log(pdfpath);
@@ -34,49 +30,50 @@ const docLoader = async (req, res) => {
       const pdfData = await pdf(dataBuffer);
 
       return pdfData.text;
+      
     }
 
     async function generateEmbeddings() {
       const pdfContent = await extractTextfromPdf(pdfpath);
       const splitter = new RecursiveCharacterTextSplitter({
-        chunkSize: 10,
-        chunkOverlap: 1,
-      });
+        chunkSize: 100,
+        chunkOverlap: 10,
+        separators: [",", ".", "!", "?", "\n"]      });
 
       const output = await splitter.createDocuments([pdfContent]);
+      const texts = output.map(doc => doc.pageContent)
+      console.log(output[0])
+      
 
-      const docs = await loadQAMapReduceChain.load
-
-      const embeddings = new LlamaCppEmbeddings({
-        modelPath: llamaPath,
-        embedding: output
+      const embeddings = new HuggingFaceTransformersEmbeddings({
+        modelName: "Xenova/all-MiniLM-L6-v2",
       });
 
-   //   const response = await embeddings.embedDocuments(pdfContent);
+     const response = await embeddings.embedDocuments(texts);
 
-      const vectorstore = await FaissStore.fromDocuments(output, embeddings); 
-
-      const result = await vectorstore.similaritySearch("testing", 1)
-      console.log(result)
-
-      // const chain = RetrievalQAChain.fromLLM(
-      //   model,
-      //   vectorstore.asRetriever()
-      // );
-
-    //   console.log(chain)
+     console.log(response)
 
 
-    // const res = await chain._call({
-    //     query: "What is mentioned in pdf?"
-    // });
-    // console.log({ res });
+      const vectorstore = await FaissStore.fromDocuments(output, embeddings)
+  
+      const result = await vectorstore.similaritySearch(userInput, 10)
+      console.log(result, "result")
+
+      const chain = RetrievalQAChain.fromLLM(
+        model,
+        vectorstore.asRetriever()
+      );
+
+    const res = await chain._call({
+        query: userInput
+    });
+    console.log({ res });
     }
-
-    generateEmbeddings();
+    const res = await generateEmbeddings(await extractTextfromPdf(pdfpath));
 
     return res.json({
       success: true,
+      res
     });
   } catch (error) {
     return res.json({
