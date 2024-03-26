@@ -11,6 +11,7 @@ const docLoader = async (req, res) => {
     const { RecursiveCharacterTextSplitter } = await import(
       "langchain/text_splitter"
     );
+    const {RunnablePassthrough, RunnableSequence} = await import ('langchain/schema/runnable')
 
     
     const llamaPath = "./LLM/llama-2-7b-chat.Q2_K.gguf";
@@ -64,18 +65,22 @@ const docLoader = async (req, res) => {
         vectorstore.asRetriever()
       );
 
-    const res = await chain._call({
+    const call = await chain._call({
         query: userInput
     });
-    console.log({ res });
+    console.log({ call });
+    return call;
     }
-    const res = await generateEmbeddings(await extractTextfromPdf(pdfpath));
+    const response = await generateEmbeddings(await extractTextfromPdf(pdfpath));
 
-    return res.json({
-      success: true,
-      res
-    });
+    return res.json(
+      {
+        success : true,
+        response
+      }
+    )
   } catch (error) {
+    console.log(error)
     return res.json({
       success: false,
     });
