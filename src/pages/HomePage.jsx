@@ -92,7 +92,7 @@ const Home = () => {
             chatLog.map((message, index) => {
               return (
                 <div key={index} className={` ${message.type === 'user' ? '' : 'bg-white/[.05] rounded-md'} chat m-4 py-8 px-12 text-sm flex items-start text-white text-justify`}>
-                  <img className='chatImg object-cover w-10 mr-8 rounded-md' src={message.type === 'user' ? userIcon : robotImageLogo} alt="profile-image" /><p className='text'>{message.message}</p>
+                  <img className='chatImg object-cover w-10 mr-8 rounded-md' src={message.type === 'user' ? userIcon : robotImageLogo} alt="" /><p className='text'>{message.message}</p>
                 </div>
               )
             })
@@ -100,7 +100,7 @@ const Home = () => {
           {
             isLoading ? (
             <div key={chatLog.length} className={'bg-white/[.05] rounded-md chat m-4 py-8 px-12 text-sm flex items-start text-white text-justify'}>
-              <img className='chatImg object-cover w-10 mr-8 rounded-md' src={robotImageLogo} alt="profile-image" /><p className='text'>
+              <img className='chatImg object-cover w-10 mr-8 rounded-md' src={robotImageLogo} alt="" /><p className='text'>
                 <TypingAnimation/>
               </p>
             </div>
@@ -128,6 +128,7 @@ const Home = () => {
         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
       </svg>
       </div>
+      
 
         <Menu as='div' className='bg-gray-600/50 shadow-md rounded-md hover: cursor-pointer flex justify-between w-36 h-10 mt-5 ml-20 absolute'>
           <div>
