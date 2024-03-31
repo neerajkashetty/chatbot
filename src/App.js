@@ -7,6 +7,7 @@ const {docLoader} = require("../controllers/docLoader");
 
 
 
+
 //creating the instance of the express with the variable app
 const app = express();
 
@@ -22,6 +23,9 @@ app.use('/api/signUp', signUp)
 app.use('/api/Login', Login)
 
 app.use('/api/ai', docLoader)
+
+const verify = require('../routes/verifyRoute')
+app.use('/api/user', verify )
 
 
 // app.get('/user', (req, res) => {

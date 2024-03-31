@@ -5,15 +5,17 @@ import sendBtn from '../assets/send.svg';
 import robotImageLogo from '../assets/robot-assistant.png';
 import userIcon from '../assets/user.png';
 import TypingAnimation from '../components/TypingAnimation';
-import LeftPane from '../components/LeftPane';
 import axios from 'axios';
 
 const Home = () => {
   const [chatLog, setChatLog] = useState([])
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
-  const [uploadedFiles, setUploadedFiles] = useState([]);
-  
+  const [uploadedFiles, setUploadedFiles] = useState([]);  
+  const [previousChats, setPreviousChats] = useState([])
+  const [currentTitle, setCurrentTitle] = useState(null)
+  const [firstPropmt, setFirstPropmt] = useState(null)
+  const [chatbotResponse, setChatbotResponse] = useState(null)
 
   const handleChange = (event) => {
     setSearchTerm(event.target.value)
@@ -61,13 +63,19 @@ const Home = () => {
     }
   };
 
+  const handleChatList = (uniqueTitle) => {
+    setCurrentTitle(uniqueTitle)
+    setChatbotResponse(null)
+    setFirstPropmt(null)
+    setSearchTerm(null)
+  }
+  
+
   const delayedChatbotResponse = async () => {
       
     const response = await axios.post('http://localhost:3002/api/ai', {
       userInput: searchTerm
     });
-
-    console.log(response.data.response.text)
       // Add chatbot response to chat log after 2 seconds
       setChatLog((prevChatLog) => [
         ...prevChatLog,
@@ -75,18 +83,65 @@ const Home = () => {
       ]);
     setIsLoading(false)
   };
-
-  console.log(chatLog)
+  
 
   useEffect(() => {
-    console.log("isLoading:", isLoading);
-  }, [isLoading]);
+    if (!currentTitle && firstPropmt && chatbotResponse !== null) {
+      setCurrentTitle(firstPropmt);
+      console.log("What is the current title",currentTitle)
+    }
+    if(currentTitle && firstPropmt  && chatbotResponse !== null){
+      setPreviousChats(previousChats => (
+        [...previousChats,
+          {
+            title: currentTitle,
+            content: firstPropmt,
+            type : 'user'
+          },
+          {
+            title: currentTitle,
+            content: chatbotResponse,
+            type: 'chatbot'
+          }
+        ]
+      ))
+    }
+  }, [chatbotResponse, currentTitle, firstPropmt])
 
+  console.log("What are the previous chats",firstPropmt)
+
+  const createNewChat = () => {
+    console.log('clicked')
+    setChatbotResponse(null)
+    setChatLog([])
+    setFirstPropmt(null)
+    setSearchTerm(null)
+    setCurrentTitle(null)
+  }
+
+  const currentChat = previousChats.filter(previousChat => previousChat.title === currentTitle)
+  console.log("What is the current chat ",currentChat)
+  const uniqueTitles = Array.from(new Set(previousChats.map(previousChat => previousChat.title)))
+  console.log("What are the unique titles",uniqueTitles)
   
   return (
     <div className='app h-lvh bg-zinc-800 flex'>
-      <LeftPane/>
-      <section className='main flex flex-col items-center mt-6 mx-32' style={{ minHeight: 'calc(100vh - 10rem)' }} >{/*w-2/3 flex flex-col justify-end items-center shadow-md */}
+      <section className='side-bar bg-zinc-900  w-1/5 flex flex-col justify-start shadow-lg overflow-y-auto no-scrollbar scroll-smooth'>
+        <button className='bg-green-900/[.7] rounded-md p-3 m-3 text-white focus:outline-none hover:bg-green-800 hover:border-none transition-colors duration-300' onClick={createNewChat}>+ New Chat</button>
+        <ul className='recentConversations m-3 text-white space-y-3'>
+          {uniqueTitles?.map((uniqueTitle, index) => <li key={index} onClick={() => handleChatList(uniqueTitle)} className='cursor-pointer hover:bg-white/[.05] p-3 rounded-md transition-colors duration-300'>{uniqueTitle.length > 20 ? `${uniqueTitle.slice(0, 20)}...` : uniqueTitle}</li>)}
+        </ul>
+      </section>
+      <section className='main flex flex-col items-center mt-6 justify-center mx-32' style={{ minHeight: 'calc(100vh - 10rem)' }} >{/*w-2/3 flex flex-col justify-end items-center shadow-md */}
+      
+      {chatLog.length === 0 && (
+       
+        <div id='extra' className='flex items-center flex-col justify-center w-full h-full'>
+        <img className='object-cover w-20  rounded-md' src={robotImageLogo} alt="robotImageLogo" />
+        <p className='text-white text-lg font-bold tracking-wide p-3'>How Can I help you Today?</p>
+      </div>
+      )}
+        
         <div className='chats overflow-hidden overflow-y-auto no-scrollbar scroll-smooth w-full max-w-5xl' style={{ height: 'calc(100vh - 8rem)' }}>
           {
             chatLog.map((message, index) => {
@@ -107,6 +162,7 @@ const Home = () => {
             ) : null
           }
         </div>
+        
         <div className='chatFooter mt-auto mb-6 flex w-full justify-center items-center'>
           <div className='inp p-2 bg-white/[.05] flex justify-center items-center rounded-md shadown-md'>
             <input type="text" placeholder='Send your message' className='focus:outline-none outline-none p-3 text-white bg-transparent border-none' style={{ width: 'calc(100vh - 3rem)' }} 
@@ -114,6 +170,7 @@ const Home = () => {
             onChange={handleChange}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
+                setFirstPropmt(searchTerm)
                 handleSend();
               }
             }}
@@ -121,9 +178,9 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <div className="w-1/5 flex flex-col p-4 border-l border-white/[.05]">
+      <div className="w-1/5 flex flex-col p-4 border-1 bg-zinc-900">
       <div className='flex flex-col absolute items-center'>
-      <div className='absolute inline-flex rounded-full shadow-md bg-gray-600/100 w-12 h-12 ml-12 mt-4 mr-28 p-3  z-10'>
+      <div className='absolute inline-flex rounded-full shadow-md bg-white/[.6] w-12 h-12 ml-12 mt-4 mr-28 p-3  z-10'>
       <svg className='fill-white h-7 mt-2 ml-2'xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
       </svg>

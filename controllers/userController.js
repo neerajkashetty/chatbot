@@ -3,7 +3,6 @@ const JWT = require('jsonwebtoken')
 const db = require('../sequelize/models')
 const User = db.User
 const fs = require("fs");
-const { response } = require('express');
 const {generateFromEmail, generateUsername} = require("unique-username-generator")
 
 
@@ -20,14 +19,14 @@ const signUp = async (req, res) =>{
     )
 
     const user = await User.findOne({
-      attributes: ['id', 'username', 'password', 'email', 'firstName', 'lastName'],
+      attributes: ['id', 'username', 'password', 'email', 'firstName', 'lastName', 'isNewUser'],
       where:{
         email: email
       }
     })
 
     if(user){
-      return res.json({error: "Email Already taken"});
+      return res.status(404).json({error: "Email Already taken"});
     }
 
     const saltRounds = await bcrypt.genSalt(10);
@@ -38,10 +37,13 @@ const signUp = async (req, res) =>{
     lastName,
     username: username,    
     email,
-    password
+    password,
+    isNewUser:true
     }
 
     const usertable = await User.create(data)
+
+    console.log(user)
    
 
     if (usertable) {
@@ -74,24 +76,56 @@ const signUp = async (req, res) =>{
 
 const Login = async (req , res) => {
   try{
+    console.log("hakjhjkha")
    
     const {email , password} = req.body;
     //const privateKey = fs.readfileSync("./private.key", "utf8");
    // console.log("entered", req.body)
 
     const user = await User.findOne({
+      attributes: ['id', 'username', 'password', 'email', 'firstName', 'lastName', 'isNewUser'],
       where:{
         email : email
       }
       
     })
+
    
-  if(user){
+  if(!user){
+    return res.status(404).json({sucess:false, message:"No user with the provided email"})
+  }
+   
+
+ 
     const encrypted = user.password
   // const isSame = await bcrypt.compare(password, encrypted)
 
-    if(password === encrypted){
-    //  console.log("check1")
+    if(password !== encrypted){
+      return res.status(401).json({sucess:false, message:"Incorrect Password"})
+    }
+
+    console.log(user.isNewUser)
+      
+    if(user.isNewUser === undefined){
+      console.log("entered")
+
+      await user.update({isNewUser : null});
+
+      let token = JWT.sign({id: '1'}, 'dsalkdndlkask', {
+        expiresIn : 1 * 24 * 60 * 60 * 1000,
+      })
+    
+
+    return res.json({
+      sucess: true,
+      data:{
+        username: user.username,
+        authtoken: token,
+        firstLogin: true
+      }
+    });
+  } else{
+    console.log("check1")
       let token = JWT.sign({ id: "1" }, 'dsalkdndlkask', {
         expiresIn: 1 * 24 * 60 * 60 * 1000,
       });
@@ -105,11 +139,7 @@ const Login = async (req , res) => {
           authtoken : token
         }
        });
-  }
-    }
-    else{
-    res.json({sucess: false , message: "No user with the email"})
-    }
+      }
   }
     
     catch(error){

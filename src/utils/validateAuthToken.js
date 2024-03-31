@@ -3,7 +3,7 @@ import axios from "axios";
 export const validateAuthToken = (userToken) =>{
     return new Promise( (resolve, reject)=> {
     axios
-    .get("http://localhost:3002/api/Login",{
+    .get("http://localhost:3002/api/user/verify",{
         headers :{
             "Content-type" : "application/json",
              authorization : userToken,
