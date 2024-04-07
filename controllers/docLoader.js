@@ -24,7 +24,7 @@ const docLoader = async (req, res) => {
     const model = new LlamaCpp({ modelPath: llamaPath, temperature: 0.1 });
 
     async function extractTextfromPdf(pdfpath) {
-      console.log(pdfpath);
+           console.log(pdfpath);
 
       let dataBuffer = fs.readFileSync(pdfpath);
 
