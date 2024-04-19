@@ -29,6 +29,8 @@ const signUp = async (req, res) =>{
       return res.status(404).json({error: "Email Already taken"});
     }
 
+    const privateKey = fs.readFileSync("./jwtRS256.key", "utf-8");
+
     const saltRounds = await bcrypt.genSalt(10);
     //const hashedPassword = await bcrypt.hash(password, saltRounds)
     //console.log("hvjhjhjh",hashedPassword)
@@ -47,8 +49,9 @@ const signUp = async (req, res) =>{
    
 
     if (usertable) {
-     let token = JWT.sign({ id: '1' }, 'dsalkdndlkask', {
-       expiresIn: 1 * 24 * 60 * 60 * 1000,
+     let token = JWT.sign({id: user.id}, "hello", {
+       expiresIn: "1hr",
+       algorithm: "HS256"
      });
 
      res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
@@ -75,13 +78,10 @@ const signUp = async (req, res) =>{
 
 
 const Login = async (req , res) => {
-  try{
-    console.log("hakjhjkha")
-   
+  try{   
     const {email , password} = req.body;
     //const privateKey = fs.readfileSync("./private.key", "utf8");
    // console.log("entered", req.body)
-
     const user = await User.findOne({
       attributes: ['id', 'username', 'password', 'email', 'firstName', 'lastName', 'isNewUser'],
       where:{
@@ -90,14 +90,11 @@ const Login = async (req , res) => {
       
     })
 
-   
   if(!user){
     return res.status(404).json({sucess:false, message:"No user with the provided email"})
   }
    
-
- 
-    const encrypted = user.password
+  const encrypted = user.password
   // const isSame = await bcrypt.compare(password, encrypted)
 
     if(password !== encrypted){
@@ -105,14 +102,17 @@ const Login = async (req , res) => {
     }
 
     console.log(user.isNewUser)
+
+    const privateKey = fs.readFileSync("./jwtRS256.key", "utf-8");
       
     if(user.isNewUser === undefined){
       console.log("entered")
 
       await user.update({isNewUser : null});
 
-      let token = JWT.sign({id: '1'}, 'dsalkdndlkask', {
-        expiresIn : 1 * 24 * 60 * 60 * 1000,
+      let token = JWT.sign({id: user.id}, "hello", {
+        expiresIn : "1hr",
+        algorithm: "HS256"
       })
     
 
@@ -126,8 +126,9 @@ const Login = async (req , res) => {
     });
   } else{
     console.log("check1")
-      let token = JWT.sign({ id: "1" }, 'dsalkdndlkask', {
-        expiresIn: 1 * 24 * 60 * 60 * 1000,
+      let token = JWT.sign({id: user.id}, "hello", {
+        expiresIn: "1hr",
+        algorithm: "HS256"
       });
       res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
       // console.log("user", JSON.stringify(verify, null, 2));

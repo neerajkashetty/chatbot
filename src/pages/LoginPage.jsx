@@ -25,7 +25,7 @@ const LoginPage = () => {
         } else {
           console.error('Login issues', response.statusText);
         }
-  
+
         console.log(response);
       } else {
         console.error('Invalid form data:', data);
