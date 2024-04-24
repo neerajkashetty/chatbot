@@ -4,6 +4,8 @@ import axios from 'axios';
 import RightPane from '../components/RightPane';
 import LeftPane from '../components/LeftPane';
 import MiddlePane from '../components/MiddlePane';
+import { usernameState } from '../atoms/user';
+import { useRecoilValue } from 'recoil';
 
 
 const Home = () => {
@@ -14,6 +16,10 @@ const Home = () => {
   const [currentTitle, setCurrentTitle] = useState(null)
   const [firstPropmt, setFirstPropmt] = useState(null)
   const [chatbotResponse, setChatbotResponse] = useState(null)
+
+  const username = useRecoilValue(usernameState)
+  
+  console.log(username)
 
   const handleChange = (event) => {
     setSearchTerm(event.target.value)

@@ -16,11 +16,12 @@ import { RecoilRoot } from "recoil";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <RecoilRoot>
-    <Router>
+  <Router>
+    <RecoilRoot>
       <Routes>
-        <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/login" element={<LoginPage />} />
+
         <Route
           path="/home"
           element={
@@ -31,8 +32,8 @@ root.render(
         ></Route>
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
-    </Router>
-  </RecoilRoot>
+    </RecoilRoot>
+  </Router>
 );
 
 // If you want to start measuring performance in your app, pass a function

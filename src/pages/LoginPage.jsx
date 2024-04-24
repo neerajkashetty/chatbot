@@ -1,10 +1,9 @@
 import { Link} from 'react-router-dom';
-import { useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import {useForm} from 'react-hook-form';
 import axios from 'axios';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { usernameState } from '../atoms/user';
-import { useRecoilValue } from 'recoil';
 
 const LoginPage = () => {
   const {
@@ -12,9 +11,8 @@ const LoginPage = () => {
     handleSubmit
   } = useForm();
 
-  const setUserName = useSetRecoilState(usernameState)
-  const username = useRecoilValue(usernameState);
-
+  const [username,setUserName] = useRecoilState(usernameState)
+  
   const onSubmit = useCallback(async (data) => {
     try {
       if (data && data.email && data.password) {
@@ -28,9 +26,11 @@ const LoginPage = () => {
           localStorage.clear()
           localStorage.setItem("token", JSON.stringify(response.data.data.authtoken))
           console.log(response.data.data.username)
-          setUserName(response.data.data.username)
+          setUserName({
+            isAuthenticated: true,
+            user :localStorage.setItem('username', response.data.data.username)})
           console.log(username)
-          window.location = "/home"
+          window.location = '/home'
         } else {
           console.error('Login issues', response.statusText);
         }
@@ -44,7 +44,7 @@ const LoginPage = () => {
     }
   },
    // eslint-disable-next-line react-hooks/exhaustive-deps
-  [username]);
+  [setUserName]);
 
 
 
