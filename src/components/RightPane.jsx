@@ -1,10 +1,16 @@
 import { Menu } from '@headlessui/react';
 import { useState } from 'react';
 import user from '../sources/icons/user.svg'
-
+import { usernameState } from '../atoms/user';
+import { useRecoilValue } from 'recoil'
 
 const RightPane =  () =>{
   const [uploadedFiles, setUploadedFiles] = useState([]);  
+  
+   const username = useRecoilValue(usernameState);
+
+  
+  console.log(username)
 
   const onLogOut = () =>{
     localStorage.clear()
@@ -43,7 +49,7 @@ const RightPane =  () =>{
   </div>
     <Menu as='div' className='bg-gray-600/50 shadow-md rounded-md hover: cursor-pointer flex justify-between w-36 h-10 mt-5 ml-20 absolute'>
       <div>
-      <Menu.Button className='flex font-bold text-gray-200 ml-6 mt-3 text-sm text-left w-full mb-4'>Neeraj1234
+      <Menu.Button className='flex font-bold text-gray-200 ml-6 mt-3 text-sm text-left w-full mb-4'> {username}
       <div className='ml-1 '>
       <svg className='fill-black bg-black' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
       <path fill-rule="evenodd" d="M12.53 16.28a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 14.69l6.97-6.97a.75.75 0 1 1 1.06 1.06l-7.5 7.5Z" clip-rule="evenodd" />

@@ -2,12 +2,18 @@ import { Link} from 'react-router-dom';
 import { useEffect, useCallback } from 'react';
 import {useForm} from 'react-hook-form';
 import axios from 'axios';
+import { useSetRecoilState } from 'recoil';
+import { usernameState } from '../atoms/user';
+import { useRecoilValue } from 'recoil';
 
 const LoginPage = () => {
   const {
     register, 
     handleSubmit
   } = useForm();
+
+  const setUserName = useSetRecoilState(usernameState)
+  const username = useRecoilValue(usernameState);
 
   const onSubmit = useCallback(async (data) => {
     try {
@@ -21,6 +27,9 @@ const LoginPage = () => {
         if (response.status === 200) {
           localStorage.clear()
           localStorage.setItem("token", JSON.stringify(response.data.data.authtoken))
+          console.log(response.data.data.username)
+          setUserName(response.data.data.username)
+          console.log(username)
           window.location = "/home"
         } else {
           console.error('Login issues', response.statusText);
@@ -33,11 +42,10 @@ const LoginPage = () => {
     } catch (error) {
       console.error('An error occurred:', error.message);
     }
-  }, []);
-useEffect(()=>{
-  onSubmit();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-},[])
+  },
+   // eslint-disable-next-line react-hooks/exhaustive-deps
+  [username]);
+
 
 
 
@@ -53,7 +61,7 @@ useEffect(()=>{
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <div>
               <label
-                for="email"
+                htmlFor="email"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
                 Email address
@@ -63,7 +71,7 @@ useEffect(()=>{
                   id="email"
                   name="email"
                   type="email"
-                  autocomplete="email"
+                  autoComplete="email"
                   {...register('email', {required: true}) }
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -74,7 +82,7 @@ useEffect(()=>{
             <div>
               <div className="flex items-center justify-between">
                 <label
-                  for="password"
+                  htmlFor="password"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Password
@@ -92,7 +100,7 @@ useEffect(()=>{
                   id="password"
                   name="password"
                   type="password"
-                  autocomplete="current-password"
+                  autoComplete="current-password"
                   {...register('password',{required:true})}
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
