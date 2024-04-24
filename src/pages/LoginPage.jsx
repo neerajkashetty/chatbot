@@ -4,7 +4,8 @@ import {useForm} from 'react-hook-form';
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
 import { usernameState } from '../atoms/user';
-
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const LoginPage = () => {
   const {
     register, 
@@ -22,24 +23,34 @@ const LoginPage = () => {
         });
         console.log(response)
   
-        if (response.status === 200) {
+        if (response.data.sucess) {
           localStorage.clear()
           localStorage.setItem("token", JSON.stringify(response.data.data.authtoken))
           console.log(response.data.data.username)
+          toast.success("Authentication Successful !", {
+            type: "success",
+            autoClose: 2000,
+            position: "top-center"
+          });
           setUserName({
             isAuthenticated: true,
             user :localStorage.setItem('username', response.data.data.username)})
+            window.location = '/home'
           console.log(username)
-          window.location = '/home'
         } else {
           console.error('Login issues', response.statusText);
         }
-
-        console.log(response);
       } else {
         console.error('Invalid form data:', data);
       }
     } catch (error) {
+      toast.error( "Incorrect Email or Password",{
+        type: "error",
+        autoClose: 3000,
+        position: "top-center"
+      }
+
+      )
       console.error('An error occurred:', error.message);
     }
   },
@@ -52,6 +63,7 @@ const LoginPage = () => {
   return (
     <>
       <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+        <ToastContainer/>
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
             Login in to your account
@@ -125,6 +137,7 @@ const LoginPage = () => {
           </Link>
         </p>
       </div>
+
       </div>
   </>
   );
