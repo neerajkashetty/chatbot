@@ -13,6 +13,7 @@ const LoginPage = () => {
   } = useForm();
 
   const [username,setUserName] = useRecoilState(usernameState)
+
   
   const onSubmit = useCallback(async (data) => {
     try {
@@ -28,6 +29,7 @@ const LoginPage = () => {
           localStorage.setItem("token", JSON.stringify(response.data.data.authtoken))
           console.log(response.data.data.username)
           toast.success("Authentication Successful !", {
+            render: "Authenticated",
             type: "success",
             autoClose: 2000,
             position: "top-center"
@@ -35,7 +37,7 @@ const LoginPage = () => {
           setUserName({
             isAuthenticated: true,
             user :localStorage.setItem('username', response.data.data.username)})
-            window.location = '/home'
+          window.location = '/home'
           console.log(username)
         } else {
           console.error('Login issues', response.statusText);

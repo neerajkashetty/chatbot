@@ -95,7 +95,7 @@ const Home = () => {
 
   const currentChat = previousChats.filter(previousChat => previousChat.title === currentTitle)
   console.log("What is the current chat ",currentChat)
-  const uniqueTitles = Array.from(new Set(previousChats.map(previousChat => previousChat.title)))
+  const uniqueTitles = ['skadha', 'kjashkjfh', 'kjahfkjafh']
   console.log("What are the unique titles",uniqueTitles)
   
   return (
