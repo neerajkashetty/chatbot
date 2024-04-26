@@ -49,8 +49,6 @@ const signUp = async (req, res) => {
 
     const usertable = await User.create(data);
 
-    console.log(user);
-
     if (usertable) {
       let token = JWT.sign({ id: user.id }, "hello", {
         expiresIn: "1hr",
@@ -115,16 +113,12 @@ const Login = async (req, res) => {
     const privateKey = fs.readFileSync("./jwtRS256.key", "utf-8");
 
     if (user.isNewUser === undefined) {
-      console.log("entered");
-
       await user.update({ isNewUser: null });
 
       let token = JWT.sign({ id: user.id }, "hello", {
         expiresIn: "1hr",
         algorithm: "HS256",
       });
-
-      console.log(user.username);
 
       return res.json({
         sucess: true,
@@ -135,7 +129,6 @@ const Login = async (req, res) => {
         },
       });
     } else {
-      console.log("check1");
       let token = JWT.sign({ id: user.id }, "hello", {
         expiresIn: "1hr",
         algorithm: "HS256",
