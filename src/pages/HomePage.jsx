@@ -4,8 +4,7 @@ import axios from 'axios';
 import RightPane from '../components/RightPane';
 import LeftPane from '../components/LeftPane';
 import MiddlePane from '../components/MiddlePane';
-import { usernameState } from '../atoms/user';
-import { useRecoilValue } from 'recoil';
+
 
 
 const Home = () => {
@@ -14,12 +13,8 @@ const Home = () => {
   const [isLoading, setIsLoading] = useState(false)
   const [previousChats, setPreviousChats] = useState([])
   const [currentTitle, setCurrentTitle] = useState(null)
-  const [firstPropmt, setFirstPropmt] = useState(null)
   const [chatbotResponse, setChatbotResponse] = useState(null)
 
-  const username = useRecoilValue(usernameState)
-  
-  console.log(username)
 
   const handleChange = (event) => {
     setSearchTerm(event.target.value)
@@ -40,7 +35,6 @@ const Home = () => {
   const handleChatList = (uniqueTitle) => {
     setCurrentTitle(uniqueTitle)
     setChatbotResponse(null)
-    setFirstPropmt(null)
     setSearchTerm(null)
   }
   
@@ -60,16 +54,14 @@ const Home = () => {
   
 
   useEffect(() => {
-    if (!currentTitle && firstPropmt && chatbotResponse !== null) {
-      setCurrentTitle(firstPropmt);
+    if (!currentTitle  && chatbotResponse !== null) {
       console.log("What is the current title",currentTitle)
     }
-    if(currentTitle && firstPropmt  && chatbotResponse !== null){
+    if(currentTitle   && chatbotResponse !== null){
       setPreviousChats(previousChats => (
         [...previousChats,
           {
             title: currentTitle,
-            content: firstPropmt,
             type : 'user'
           },
           {
@@ -80,15 +72,13 @@ const Home = () => {
         ]
       ))
     }
-  }, [chatbotResponse, currentTitle, firstPropmt])
+  }, [chatbotResponse, currentTitle])
 
-  console.log("What are the previous chats",firstPropmt)
 
   const createNewChat = () => {
     console.log('clicked')
     setChatbotResponse(null)
     setChatLog([])
-    setFirstPropmt(null)
     setSearchTerm(null)
     setCurrentTitle(null)
   }
@@ -99,10 +89,10 @@ const Home = () => {
   console.log("What are the unique titles",uniqueTitles)
   
   return (
-    <div className='app h-lvh bg-zinc-800 flex'>
+    <div className='h-screen w-full bg-zinc-800 flex'>
     <LeftPane createNewChat = {createNewChat} handleChatList = {handleChatList} uniqueTitles= {uniqueTitles}/>
     <MiddlePane chatLog={chatLog} searchTerm={searchTerm} isLoading={isLoading} handleSend={handleSend} handleChange={handleChange} />
-    <div className="w-1/5 flex flex-col p-4 border-1 bg-zinc-900">
+    <div className="w-1/5 hidden flex flex-col p-4 border-1 bg-zinc-900 hidden">
     <RightPane/>
     </div>
     </div>

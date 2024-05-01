@@ -6,7 +6,9 @@ const docLoader = async (req, res) => {
   try {
     const { userInput } = req.body;
     const { LlamaCpp } = await import("@langchain/community/llms/llama_cpp");
+    const { Pinecone } = await import("@pinecone-database/pinecone");
     const { RetrievalQAChain } = await import("langchain/chains");
+    const { PineconeStore } = await import("@langchain/pinecone");
     const { FaissStore } = await import(
       "@langchain/community/vectorstores/faiss"
     );
@@ -24,6 +26,11 @@ const docLoader = async (req, res) => {
     const pdfpath = "./LLM/KnowledgeBase/test.pdf";
 
     const model = new LlamaCpp({ modelPath: llamaPath, temperature: 0.1 });
+    const pinecone = new Pinecone();
+
+    const pineconeIndexName = "pdf-chat";
+
+    const pineconeIndex = pinecone.Index(pineconeIndexName);
 
     const pdfContent = await extractTextfromPdf(pdfpath);
     const splitter = new RecursiveCharacterTextSplitter({
@@ -40,13 +47,20 @@ const docLoader = async (req, res) => {
     });
 
     const response = await embeddings.embedDocuments(texts);
-    const vectorstore = await FaissStore.fromDocuments(output, embeddings);
 
-    const result = await vectorstore.similaritySearch(userInput, 10);
+    //  console.log(response);
 
-    const chain = RetrievalQAChain.fromLLM(model, vectorstore.asRetriever(), {
-      qaTemplate: QA_PROMPT,
+    const vectorstore = await PineconeStore.fromExistingIndex(embeddings, {
+      pineconeIndex: pineconeIndex,
     });
+
+    //const letsee = await vectorstore.addDocuments(output);
+
+    const chain = RetrievalQAChain.fromLLM(
+      model,
+      vectorstore.asRetriever(),
+      {}
+    );
     const call = await chain._call({ query: userInput });
 
     await conversations.create({

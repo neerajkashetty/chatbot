@@ -11,30 +11,22 @@ const MiddlePane = ({
   handleSend,
   handleChange,
 }) => (
-  <section
-    className="main flex flex-col items-center mt-6 justify-center mx-32"
-    style={{ minHeight: "calc(100vh - 10rem)" }}
-  >
+  <div
+    className="flex flex-col items-center w-screen justify-center">
     {chatLog.length === 0 && (
-      <div
-        id="extra"
-        className="flex items-center flex-col justify-center w-full h-full"
-      >
+      <div className="relative top-44 flex flex-col hidden items-center">
         <img
-          className="object-cover w-20  rounded-md"
+          className="w-20  rounded-md"
           src={robotImageLogo}
           alt="robotImageLogo"
         />
-        <p className="text-white text-lg font-bold tracking-wide p-3">
+        <p className="text-white text-lg font-bold p-3">
           How Can I help you Today?
         </p>
       </div>
     )}
 
-    <div
-      className="chats overflow-hidden overflow-y-auto no-scrollbar scroll-smooth w-full max-w-5xl"
-      style={{ height: "calc(100vh - 8rem)" }}
-    >
+    <div className="overflow-hidden h-full overflow-y-auto no-scrollbar scroll-smooth ">
       {chatLog.map((message, index) => (
         <div
           key={index}
@@ -69,13 +61,12 @@ const MiddlePane = ({
       )}
     </div>
 
-    <div className="chatFooter mt-auto mb-6 flex w-full justify-center items-center">
-      <div className="inp p-2 bg-white/[.05] flex justify-center items-center rounded-md shadown-md">
+    <div className="relative flex mb-4 w-4/5 ">
+      <div className="p-2 grow bg-white/[.05] flex rounded-md shadow-md">
         <input
           type="text"
           placeholder="Send your message"
           className="focus:outline-none outline-none p-3 text-white bg-transparent border-none"
-          style={{ width: "calc(100vh - 3rem)" }}
           value={searchTerm}
           onChange={handleChange}
           onKeyDown={(e) => {
@@ -86,14 +77,14 @@ const MiddlePane = ({
         />
         <button
           type="submit"
-          className="send bg-transparent border-none"
+          className="justify-end bg-transparent border-none"
           onClick={handleSend}
         >
           <img src={sendBtn} alt="send" />
         </button>
       </div>
     </div>
-  </section>
+  </div>
 );
 
 export default MiddlePane;
