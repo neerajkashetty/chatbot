@@ -92,7 +92,7 @@ const Home = () => {
     <div className='h-screen w-full bg-zinc-800 flex'>
     <LeftPane createNewChat = {createNewChat} handleChatList = {handleChatList} uniqueTitles= {uniqueTitles}/>
     <MiddlePane chatLog={chatLog} searchTerm={searchTerm} isLoading={isLoading} handleSend={handleSend} handleChange={handleChange} />
-    <div className="w-1/5 hidden flex flex-col p-4 border-1 bg-zinc-900 hidden">
+    <div className="flex flex-col p-4 border-1 bg-zinc-900 invisible">
     <RightPane/>
     </div>
     </div>

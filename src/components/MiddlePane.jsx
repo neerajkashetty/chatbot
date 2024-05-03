@@ -14,7 +14,7 @@ const MiddlePane = ({
   <div
     className="flex flex-col items-center w-screen justify-center">
     {chatLog.length === 0 && (
-      <div className="relative top-44 flex flex-col hidden items-center">
+      <div className="relative top-44 flex flex-col  items-center">
         <img
           className="w-20  rounded-md"
           src={robotImageLogo}
@@ -61,12 +61,12 @@ const MiddlePane = ({
       )}
     </div>
 
-    <div className="relative flex mb-4 w-4/5 ">
-      <div className="p-2 grow bg-white/[.05] flex rounded-md shadow-md">
+    <div className="relative flex justify-end mb-4 w-4/5 ">
+      <div className="p-2 grow  bg-white/[.05] flex items-center rounded-md shadow-md">
         <input
           type="text"
           placeholder="Send your message"
-          className="focus:outline-none outline-none p-3 text-white bg-transparent border-none"
+          className="focus:outline-none outline-none p-3 flex items-center text-white bg-transparent border-none"
           value={searchTerm}
           onChange={handleChange}
           onKeyDown={(e) => {
@@ -75,14 +75,16 @@ const MiddlePane = ({
             }
           }}
         />
+      </div>
+      <div className="flex absolute mt-4 items-center">
         <button
           type="submit"
-          className="justify-end bg-transparent border-none"
+          className="flex justify-end bg-transparent border-none"
           onClick={handleSend}
         >
           <img src={sendBtn} alt="send" />
         </button>
-      </div>
+        </div>
     </div>
   </div>
 );
