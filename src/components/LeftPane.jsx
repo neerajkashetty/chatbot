@@ -9,7 +9,6 @@ const LeftPane = ({ createNewChat, handleChatList, uniqueTitles }) => {
     setConversations([...conversations, 'New Conversation']);
   };
 
-  console.log(uniqueTitles);
 
   return (
     <section className="bg-zinc-900 w-1/5 hidden flex flex-col justify-start shadow-lg overflow-y-auto no-scrollbar scroll-smooth">

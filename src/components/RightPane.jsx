@@ -43,7 +43,7 @@ const RightPane =  () =>{
 
 
  return(
-  <div className='flex flex-col absolute items-center'>
+  <div className='flex flex-col items-center lg:relative'>
   <div className='absolute inline-flex rounded-full shadow-md bg-white/[.6] w-12 h-12 ml-12 mt-4 mr-28 p-3  z-10'>
   <img src={user} height={24} width={24} alt="" /> {/* Example of how to import the svgs into the code*/}
   </div>
