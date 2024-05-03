@@ -10,11 +10,11 @@ const MiddlePane = ({
   isLoading,
   handleSend,
   handleChange,
-}) => (
-  <div
-    className="flex flex-col items-center w-screen justify-center">
+}) => ( 
+  
+  <div className="flex flex-col items-center w-screen h-screen relative justify-center">
     {chatLog.length === 0 && (
-      <div className="relative top-44 flex flex-col  items-center">
+      <div className="relative top-1/4 flex flex-col h-screen items-center">
         <img
           className="w-20  rounded-md"
           src={robotImageLogo}
@@ -23,6 +23,25 @@ const MiddlePane = ({
         <p className="text-white text-lg font-bold p-3">
           How Can I help you Today?
         </p>
+
+        <div className="grid grid-cols-2 gap-4 relative top-3/4 sm:top-72 sm:h-2/5 items-center rounded-lg">
+          {Array.from({length:4}, (_, index)=> (
+          <div className="flex hover:bg-zinc-700 border-gray-300 border sm:h-4/5  rounded-lg opacity-1">
+          <button className=" flex flex-col">
+            <p className="text-white ml-2 font-bold text-sm ">Give me ideas </p>
+            <p className="text-gray-500 text-sm font-bold">
+              {" "}
+              for what to do with my kids' art
+            </p>
+          </button>
+          <div className="hover:fill-gray-500">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 relative">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15m0-3-3-3m0 0-3 3m3-3V15" />
+        </svg>
+        </div>
+          </div>
+          ))}
+        </div>
       </div>
     )}
 
@@ -62,11 +81,11 @@ const MiddlePane = ({
     </div>
 
     <div className="relative flex justify-end mb-4 w-4/5 ">
-      <div className="p-2 grow  bg-white/[.05] flex items-center rounded-md shadow-md">
+      <div className="p-2  grow basis bg-white/[.05] flex items-center rounded-md shadow-md">
         <input
           type="text"
           placeholder="Send your message"
-          className="focus:outline-none outline-none p-3 flex items-center text-white bg-transparent border-none"
+          className="focus:outline-none outline-none basis-full p-3 flex items-center text-white bg-transparent border-none"
           value={searchTerm}
           onChange={handleChange}
           onKeyDown={(e) => {
@@ -84,7 +103,7 @@ const MiddlePane = ({
         >
           <img src={sendBtn} alt="send" />
         </button>
-        </div>
+      </div>
     </div>
   </div>
 );
