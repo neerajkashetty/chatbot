@@ -196,6 +196,7 @@ const RightPane = () => {
             className="hidden"
           />
         </div>
+        {uploadedFiles && (
         <div className="w-56 h-auto bg-gray-600/25 mt-10 rounded-b-md">
           <h3 className="text-xs font-semibold text-gray-200">
             Uploaded Documents:
@@ -226,6 +227,7 @@ const RightPane = () => {
             </div>
           ))}
         </div>
+        )}
       </div>
     </div>
   );

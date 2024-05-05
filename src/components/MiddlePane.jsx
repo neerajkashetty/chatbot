@@ -3,6 +3,9 @@ import sendBtn from "../assets/send.svg";
 import robotImageLogo from "../assets/robot-assistant.png";
 import userIcon from "../assets/user.png";
 import TypingAnimation from "./TypingAnimation";
+import Spline from '@splinetool/react-spline';
+import Robot from '../../src/assets/Robot.json';
+import Lottie from "lottie-react";
 
 const MiddlePane = ({
   chatLog,
@@ -10,42 +13,54 @@ const MiddlePane = ({
   isLoading,
   handleSend,
   handleChange,
-}) => ( 
-  
-  <div className="flex flex-col items-center w-screen h-screen relative justify-center">
+}) => (
+  <div className="flex flex-col items-center w-screen relative justify-center">
     {chatLog.length === 0 && (
       <div className="relative top-1/4 flex flex-col h-screen items-center">
-        <img
-          className="w-20  rounded-md"
-          src={robotImageLogo}
-          alt="robotImageLogo"
-        />
-        <p className="text-white text-lg font-bold p-3">
+        <div className="flex ">
+        <p className="text-white basis-1/2 top-1/3  relative text-lg font-bold p-3">
           How Can I help you Today?
         </p>
-
-        <div className="grid grid-cols-2 gap-4 relative top-3/4 sm:top-72 sm:h-2/5 items-center rounded-lg">
-          {Array.from({length:4}, (_, index)=> (
-          <div className="flex hover:bg-zinc-700 border-gray-300 border sm:h-4/5  rounded-lg opacity-1">
-          <button className=" flex flex-col">
-            <p className="text-white ml-2 font-bold text-sm ">Give me ideas </p>
-            <p className="text-gray-500 text-sm font-bold">
-              {" "}
-              for what to do with my kids' art
-            </p>
-          </button>
-          <div className="hover:fill-gray-500">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 relative">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15m0-3-3-3m0 0-3 3m3-3V15" />
-        </svg>
+        <div className="bg-zinc-800 ">
+          <Lottie animationData={Robot} loop={true} className="w-60"/>
         </div>
-          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 top-[8rem] relative h-2/5 items-center rounded-lg">
+          {Array.from({ length: 4 }, (_, index) => (
+            <div className="flex hover:bg-zinc-700 border-gray-300 border sm:h-4/5 rounded-lg opacity-1">
+              <button className=" flex flex-col">
+                <p className="text-white ml-2 font-bold text-sm ">
+                  Give me ideas{" "}
+                </p>
+                <p className="text-gray-500 text-sm font-bold">
+                  {" "}
+                  for what to do with my kids' art
+                </p>
+              </button>
+              <div className="hover:fill-gray-500">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="w-6 h-6 relative"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M9 8.25H7.5a2.25 2.25 0 0 0-2.25 2.25v9a2.25 2.25 0 0 0 2.25 2.25h9a2.25 2.25 0 0 0 2.25-2.25v-9a2.25 2.25 0 0 0-2.25-2.25H15m0-3-3-3m0 0-3 3m3-3V15"
+                  />
+                </svg>
+              </div>
+            </div>
           ))}
         </div>
       </div>
     )}
 
-    <div className="overflow-hidden h-full overflow-y-auto no-scrollbar scroll-smooth ">
+    <div className="overflow-hidden h-full overflow-y-auto no-scrollbar  w-2/3 scroll-smooth ">
       {chatLog.map((message, index) => (
         <div
           key={index}
@@ -65,7 +80,7 @@ const MiddlePane = ({
         <div
           key={chatLog.length}
           className={
-            "bg-white/[.05] rounded-md chat m-4 py-8 px-12 text-sm flex items-start text-white text-justify"
+            "bg-white/[.05] rounded-lg chat m-4 w-full py-8 px-12 text-sm flex items-start text-white text-justify"
           }
         >
           <img

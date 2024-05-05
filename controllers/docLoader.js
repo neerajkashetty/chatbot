@@ -1,6 +1,6 @@
 const fs = require("fs");
 const pdf = require("pdf-parse");
-const { conversations } = require("../sequelize/models");
+const { Conversations } = require("../sequelize/models");
 
 const docLoader = async (req, res) => {
   try {
@@ -9,9 +9,8 @@ const docLoader = async (req, res) => {
     const { Pinecone } = await import("@pinecone-database/pinecone");
     const { RetrievalQAChain } = await import("langchain/chains");
     const { PineconeStore } = await import("@langchain/pinecone");
-    const { FaissStore } = await import(
-      "@langchain/community/vectorstores/faiss"
-    );
+    const { pull } = await import("langchain/hub");
+    const { ChatPromptTemplate } = await import("@langchain/core/prompts");
     const { HuggingFaceTransformersEmbeddings } = await import(
       "@langchain/community/embeddings/hf_transformers"
     );
@@ -46,6 +45,8 @@ const docLoader = async (req, res) => {
       modelName: "Xenova/all-MiniLM-L6-v2",
     });
 
+    const ragPrompt = (await pull) < ChatPromptTemplate > "rlm/rag-prompt";
+
     const response = await embeddings.embedDocuments(texts);
 
     //  console.log(response);
@@ -54,19 +55,22 @@ const docLoader = async (req, res) => {
       pineconeIndex: pineconeIndex,
     });
 
+    const docs = await vectorstore.similaritySearch(userInput);
+
     //const letsee = await vectorstore.addDocuments(output);
 
     const chain = RetrievalQAChain.fromLLM(
       model,
       vectorstore.asRetriever(),
+      ragPrompt,
       {}
     );
     const call = await chain._call({ query: userInput });
 
-    await conversations.create({
-      userInput: userInput,
-      botResponse: call.answer,
-    });
+    // await Conversations.create({
+    //   userInput: userInput,
+    //   botResponse: call.answer,
+    // });
 
     return res.json({ success: true, response: call });
   } catch (error) {
