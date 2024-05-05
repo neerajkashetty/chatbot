@@ -3,7 +3,6 @@ import sendBtn from "../assets/send.svg";
 import robotImageLogo from "../assets/robot-assistant.png";
 import userIcon from "../assets/user.png";
 import TypingAnimation from "./TypingAnimation";
-import Spline from '@splinetool/react-spline';
 import Robot from '../../src/assets/Robot.json';
 import Lottie from "lottie-react";
 
@@ -13,7 +12,30 @@ const MiddlePane = ({
   isLoading,
   handleSend,
   handleChange,
-}) => (
+}) => {
+
+  const customprompt = [
+    {
+      title: 'Give me Ideas',
+      Example: 'What kind of books should i read'
+    },
+    {
+      title: 'All about tesla',
+      Example: 'What is the manufacturer of telsa think'
+    },
+    {
+      title: 'Newtons third law',
+      Example: 'what is the explanation of the law',
+    },
+    {
+      title: 'What is the ability of this bot',
+      Example: 'like i am five years old'
+    }
+  ]
+ 
+
+
+  return(
   <div className="flex flex-col items-center w-screen relative justify-center">
     {chatLog.length === 0 && (
       <div className="relative top-1/4 flex flex-col h-screen items-center">
@@ -27,15 +49,14 @@ const MiddlePane = ({
         </div>
 
         <div className="grid grid-cols-2 gap-4 top-[8rem] relative h-2/5 items-center rounded-lg">
-          {Array.from({ length: 4 }, (_, index) => (
+          {customprompt.map((custom) => (
             <div className="flex hover:bg-zinc-700 border-gray-300 border sm:h-4/5 rounded-lg opacity-1">
               <button className=" flex flex-col">
                 <p className="text-white ml-2 font-bold text-sm ">
-                  Give me ideas{" "}
+                 {custom.title}
                 </p>
                 <p className="text-gray-500 text-sm font-bold">
-                  {" "}
-                  for what to do with my kids' art
+                  {custom.Example}
                 </p>
               </button>
               <div className="hover:fill-gray-500">
@@ -121,6 +142,6 @@ const MiddlePane = ({
       </div>
     </div>
   </div>
-);
+)};
 
 export default MiddlePane;
