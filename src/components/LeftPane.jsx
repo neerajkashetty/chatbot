@@ -11,7 +11,7 @@ const LeftPane = ({ createNewChat, handleChatList, uniqueTitles }) => {
 
 
   return (
-    <section className="bg-zinc-900 w-1/5 hidden lg:visible flex flex-col justify-start shadow-lg overflow-y-auto no-scrollbar scroll-smooth">
+    <section className="bg-zinc-900 w-1/5 lg:visible hidden flex flex-col justify-start shadow-lg overflow-y-auto no-scrollbar scroll-smooth">
       <p
         className="bg-green-900/[.7] rounded-md p-3 m-3 text-white text-center font-bold focus:outline-none hover:bg-green-800 hover:border-none hover:cursor-pointer transition-colors duration-300"
         onClick={handlechatlist}

@@ -7,19 +7,29 @@ const docLoader = async (req, res) => {
     const { userInput } = req.body;
     const { LlamaCpp } = await import("@langchain/community/llms/llama_cpp");
     const { Pinecone } = await import("@pinecone-database/pinecone");
-    const { RetrievalQAChain } = await import("langchain/chains");
+    const { ConversationalRetrievalQAChain } = await import("langchain/chains");
     const { PineconeStore } = await import("@langchain/pinecone");
-    const { pull } = await import("langchain/hub");
-    const { ChatPromptTemplate } = await import("@langchain/core/prompts");
     const { HuggingFaceTransformersEmbeddings } = await import(
       "@langchain/community/embeddings/hf_transformers"
     );
     const { RecursiveCharacterTextSplitter } = await import(
       "langchain/text_splitter"
     );
-    const { RunnablePassthrough, RunnableSequence } = await import(
-      "langchain/schema/runnable"
-    );
+    const { BufferMemory } = await import("langchain/memory");
+
+    const CUSTOM_QUESTION_GENERATOR_CHAIN_PROMPT = `Given the following conversation and a follow-up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow-up question to be a standalone question.
+Chat History:
+{chat_history}
+Follow-Up Input: {question}
+Your answer should follow the following format:
+\`\`\`
+Use the following pieces of context to answer the user's question.
+If you don't have relevant data to answer, simply state that you don't have enough information.
+----------------
+<Relevant chat history excerpt as context here>
+Standalone question: <Rephrased question here>
+\`\`\`
+Your answer:`;
 
     const llamaPath = "./LLM/llama-2-7b-chat.Q2_K.gguf";
     const pdfpath = "./LLM/KnowledgeBase/test.pdf";
@@ -45,8 +55,6 @@ const docLoader = async (req, res) => {
       modelName: "Xenova/all-MiniLM-L6-v2",
     });
 
-    const ragPrompt = (await pull) < ChatPromptTemplate > "rlm/rag-prompt";
-
     const response = await embeddings.embedDocuments(texts);
 
     //  console.log(response);
@@ -59,18 +67,40 @@ const docLoader = async (req, res) => {
 
     //const letsee = await vectorstore.addDocuments(output);
 
-    const chain = RetrievalQAChain.fromLLM(
+    const chain = ConversationalRetrievalQAChain.fromLLM(
       model,
-      vectorstore.asRetriever(),
-      ragPrompt,
-      {}
+      vectorstore.asRetriever({ k: 6 }),
+      {
+        memory: new BufferMemory({
+          memoryKey: "chat_history",
+          inputKey: "question",
+          returnMessages: true,
+        }),
+        questionGeneratorChainOptions: {
+          template: CUSTOM_QUESTION_GENERATOR_CHAIN_PROMPT,
+        },
+      }
     );
-    const call = await chain._call({ query: userInput });
 
-    // await Conversations.create({
-    //   userInput: userInput,
-    //   botResponse: call.answer,
-    // });
+    const call = await chain.invoke({ question: userInput });
+
+    const userId = 24;
+
+    console.log(call);
+
+    await Conversations.create(
+      { userInput: userInput, botResponse: call.text, userId: userId },
+      {
+        returning: [
+          "id",
+          "userInput",
+          "botResponse",
+          "userId",
+          "createdAt",
+          "updatedAt",
+        ],
+      }
+    );
 
     return res.json({ success: true, response: call });
   } catch (error) {

@@ -1,6 +1,5 @@
 import { Menu } from "@headlessui/react";
 import { useState } from "react";
-import user from "../sources/icons/user.svg";
 import { usernameState } from "../atoms/user";
 import { useRecoilState } from "recoil";
 
@@ -47,7 +46,7 @@ const RightPane = () => {
     <div className="flex flex-col items-center lg:relative">
       <Menu
         as="div"
-        className="bg-gray-600/50 shadow-md rounded-md border-white shadow hover:cursor-pointer flex justify-between w-44 h-16 mt-5 absolute"
+        className="bg-gray-600/50 shadow-md rounded-md border-white shadow hover:cursor-pointer flex justify-between w-44 h-12 mt-5 absolute"
       >
         <div>
           <Menu.Button className="flex font-bold text-gray-200 ml-2 mt-3 text-sm text-left w-full mb-4">

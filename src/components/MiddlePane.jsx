@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useRef} from "react";
 import sendBtn from "../assets/send.svg";
 import robotImageLogo from "../assets/robot-assistant.png";
 import userIcon from "../assets/user.png";
@@ -13,6 +13,17 @@ const MiddlePane = ({
   handleSend,
   handleChange,
 }) => {
+const chatContainerRef = useRef(null);
+
+  useEffect(()=>{
+    if(chatContainerRef.current){
+      const lastmessage = chatContainerRef.current.lastElementChild;
+    
+    if(lastmessage){
+      lastmessage.scrollIntoView({behavior: 'smooth'});
+    }
+  }
+  },[chatLog])
 
   const customprompt = [
     {
@@ -81,7 +92,7 @@ const MiddlePane = ({
       </div>
     )}
 
-    <div className="overflow-hidden h-full overflow-y-auto no-scrollbar  w-2/3 scroll-smooth ">
+    <div className="overflow-hidden h-full overflow-y-auto no-scrollbar  w-2/3 scroll-smooth " ref={chatContainerRef}>
       {chatLog.map((message, index) => (
         <div
           key={index}

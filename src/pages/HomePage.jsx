@@ -4,7 +4,6 @@ import axios from "axios";
 import RightPane from "../components/RightPane";
 import LeftPane from "../components/LeftPane";
 import MiddlePane from "../components/MiddlePane";
-import hamburger from "../assets/hamburger.svg";
 
 const Home = () => {
   const [chatLog, setChatLog] = useState([]);
@@ -101,9 +100,9 @@ const Home = () => {
         handleSend={handleSend}
         handleChange={handleChange}
       />
-      <div className="lg:hidden">
+      <div className="lg:hidden right-2 top-2 absolute">
         {!isRightPaneVisible && (
-          <button className="mr-4 mt-2" onClick={toggleRightPane}>
+          <button  onClick={toggleRightPane}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
