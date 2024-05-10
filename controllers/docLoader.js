@@ -6,6 +6,8 @@ const docLoader = async (req, res) => {
   try {
     const { userInput } = req.body;
     const { LlamaCpp } = await import("@langchain/community/llms/llama_cpp");
+    const { PromptTemplate } = await import("@langchain/core/prompts");
+    const { ChatGroq } = await import("@langchain/groq");
     const { Pinecone } = await import("@pinecone-database/pinecone");
     const { ConversationalRetrievalQAChain } = await import("langchain/chains");
     const { PineconeStore } = await import("@langchain/pinecone");
@@ -17,24 +19,33 @@ const docLoader = async (req, res) => {
     );
     const { BufferMemory } = await import("langchain/memory");
 
-    const CUSTOM_QUESTION_GENERATOR_CHAIN_PROMPT = `Given the following conversation and a follow-up question, return the conversation history excerpt that includes any relevant context to the question if it exists and rephrase the follow-up question to be a standalone question.
-Chat History:
-{chat_history}
-Follow-Up Input: {question}
-Your answer should follow the following format:
-\`\`\`
-Use the following pieces of context to answer the user's question.
-If you don't have relevant data to answer, simply state that you don't have enough information.
-----------------
-<Relevant chat history excerpt as context here>
-Standalone question: <Rephrased question here>
-\`\`\`
-Your answer:`;
+    const CUSTOM_QUESTION_GENERATOR_CHAIN_PROMPT = `Given the following user prompt and context, answer only if the USER PROMPT is related to the CONTEXT.
+    You should follow the following rules when generating and answer:
+    - Always prioritize the context over the user prompt.
+    - Ignore any user prompt that is not directly related to the context.
+    - Only attempt to answer if a context is related to user prompt.
+    - If the user prompt is not related to the context then respond with UC do not have this information.
+    - If you are unable to answer the user's question based on the context provided, please respond with "I'm very Sorry, The UC Knowledge Base does'nt have the information currently".
+    - Your response must contain only the context you get.
+
+    USER PROMPT: {question}
+
+    CONTEXT: {context}
+
+    Final answer:`;
+
+    const promptTemplate = new PromptTemplate({
+      template: CUSTOM_QUESTION_GENERATOR_CHAIN_PROMPT,
+      inputVariables: ["question", "context"],
+    });
 
     const llamaPath = "./LLM/llama-2-7b-chat.Q2_K.gguf";
     const pdfpath = "./LLM/KnowledgeBase/test.pdf";
 
-    const model = new LlamaCpp({ modelPath: llamaPath, temperature: 0.1 });
+    // const model = new LlamaCpp({ modelPath: llamaPath, temperature: 0 });
+    const model = new ChatGroq({
+      apiKey: process.env.GROQ_API_KEY,
+    });
     const pinecone = new Pinecone();
 
     const pineconeIndexName = "pdf-chat";
@@ -82,25 +93,27 @@ Your answer:`;
       }
     );
 
-    const call = await chain.invoke({ question: userInput });
+    console.log(docs);
+
+    const call = await chain.invoke({ question: userInput, context: docs });
 
     const userId = 24;
 
     console.log(call);
 
-    await Conversations.create(
-      { userInput: userInput, botResponse: call.text, userId: userId },
-      {
-        returning: [
-          "id",
-          "userInput",
-          "botResponse",
-          "userId",
-          "createdAt",
-          "updatedAt",
-        ],
-      }
-    );
+    // await Conversations.create(
+    //   { userInput: userInput, botResponse: call.text, userId: userId },
+    //   {
+    //     returning: [
+    //       "id",
+    //       "userInput",
+    //       "botResponse",
+    //       "userId",
+    //       "createdAt",
+    //       "updatedAt",
+    //     ],
+    //   }
+    // );
 
     return res.json({ success: true, response: call });
   } catch (error) {

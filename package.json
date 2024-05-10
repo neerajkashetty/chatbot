@@ -6,6 +6,7 @@
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
     "@langchain/community": "0.0.51",
+    "@langchain/groq": "0.0.9",
     "@langchain/pinecone": "0.0.4",
     "@pinecone-database/pinecone": "^2.2.0",
     "@react-three/fiber": "^8.16.1",

@@ -59,11 +59,11 @@ const chatContainerRef = useRef(null);
         </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 top-[8rem] relative h-2/5 items-center rounded-lg">
+        <div className="grid sm:grid-cols-2 gap-4 top-[8rem] relative h-[10rem] lg:h-2/5 overflow-hidden items-center rounded-lg">
           {customprompt.map((custom) => (
-            <div className="flex hover:bg-zinc-700 border-gray-300 border sm:h-4/5 rounded-lg opacity-1">
-              <button className=" flex flex-col">
-                <p className="text-white ml-2 font-bold text-sm ">
+            <div className="flex hover:bg-zinc-700 border-gray-300 overflow-invisible border sm:h-4/5 rounded-lg opacity-1">
+              <button className=" h-16 flex flex-col">
+                <p className="text-white ml-2  font-bold text-sm ">
                  {custom.title}
                 </p>
                 <p className="text-gray-500 text-sm font-bold">
@@ -127,8 +127,8 @@ const chatContainerRef = useRef(null);
       )}
     </div>
 
-    <div className="relative flex justify-end mb-4 w-4/5 ">
-      <div className="p-2  grow basis bg-white/[.05] flex items-center rounded-md shadow-md">
+    <div className="relative flex justify-end w-4/5 ">
+      <div className="p-2 lg:mb-2 mb-1  grow basis bg-white/[.05] flex items-center rounded-md shadow-md">
         <input
           type="text"
           placeholder="Send your message"
