@@ -9,7 +9,9 @@ const docLoader = async (req, res) => {
     const { PromptTemplate } = await import("@langchain/core/prompts");
     const { ChatGroq } = await import("@langchain/groq");
     const { Pinecone } = await import("@pinecone-database/pinecone");
-    const { ConversationalRetrievalQAChain } = await import("langchain/chains");
+    const { RunnableSequence, RunnablePassthrough } = await import(
+      "@langchain/core/runnables"
+    );
     const { PineconeStore } = await import("@langchain/pinecone");
     const { HuggingFaceTransformersEmbeddings } = await import(
       "@langchain/community/embeddings/hf_transformers"
@@ -17,27 +19,31 @@ const docLoader = async (req, res) => {
     const { RecursiveCharacterTextSplitter } = await import(
       "langchain/text_splitter"
     );
-    const { BufferMemory } = await import("langchain/memory");
+    const { StringOutputParser } = await import(
+      "@langchain/core/output_parsers"
+    );
 
-    const CUSTOM_QUESTION_GENERATOR_CHAIN_PROMPT = `Given the following user prompt and context, answer only if the USER PROMPT is related to the CONTEXT.
-    You should follow the following rules when generating and answer:
-    - Always prioritize the context over the user prompt.
-    - Ignore any user prompt that is not directly related to the context.
-    - Only attempt to answer if a context is related to user prompt.
-    - If the user prompt is not related to the context then respond with UC do not have this information.
-    - If you are unable to answer the user's question based on the context provided, please respond with "I'm very Sorry, The UC Knowledge Base does'nt have the information currently".
-    - Your response must contain only the context you get.
+    const CUSTOM_QUESTION_GENERATOR_CHAIN_PROMPT = `Given the following question and context, You will generate response only if the USER PROMPT is related to the CONTEXT.
+    Instructions:
+    1. You will generate a response based on the provided question and context.
+    2. Follow these rules when generating an answer:
+      - Prioritize the context over the question.
+      - Ignore any user prompts not directly related to the context.
+      - Only attempt to answer if the context is related to the question.
+      - Provide a response of up to two lines if the question is not related to the context.
+      - If unable to answer based on the provided context, respond with "I'm sorry, the UC Knowledge Base currently lacks the necessary information."
+    3. Your response must include only the context.
+    4. Generate response only with three or four lines.
 
-    USER PROMPT: {question}
+    Question: {question}
 
     CONTEXT: {context}
 
     Final answer:`;
 
-    const promptTemplate = new PromptTemplate({
-      template: CUSTOM_QUESTION_GENERATOR_CHAIN_PROMPT,
-      inputVariables: ["question", "context"],
-    });
+    const promptTemplate = PromptTemplate.fromTemplate(
+      CUSTOM_QUESTION_GENERATOR_CHAIN_PROMPT
+    );
 
     const llamaPath = "./LLM/llama-2-7b-chat.Q2_K.gguf";
     const pdfpath = "./LLM/KnowledgeBase/test.pdf";
@@ -74,46 +80,46 @@ const docLoader = async (req, res) => {
       pineconeIndex: pineconeIndex,
     });
 
+    const retreiver = vectorstore.asRetriever();
+
     const docs = await vectorstore.similaritySearch(userInput);
+
+    const serializedDocs = (docs) =>
+      docs.map((doc) => doc.pageContent).join("\n");
 
     //const letsee = await vectorstore.addDocuments(output);
 
-    const chain = ConversationalRetrievalQAChain.fromLLM(
-      model,
-      vectorstore.asRetriever({ k: 6 }),
+    const chain = RunnableSequence.from([
       {
-        memory: new BufferMemory({
-          memoryKey: "chat_history",
-          inputKey: "question",
-          returnMessages: true,
-        }),
-        questionGeneratorChainOptions: {
-          template: CUSTOM_QUESTION_GENERATOR_CHAIN_PROMPT,
-        },
-      }
-    );
+        context: retreiver.pipe(serializedDocs),
+        question: new RunnablePassthrough(),
+      },
+      promptTemplate,
+      model,
+      new StringOutputParser(),
+    ]);
 
     console.log(docs);
 
-    const call = await chain.invoke({ question: userInput, context: docs });
+    const call = await chain.invoke(userInput);
 
     const userId = 24;
 
     console.log(call);
 
-    // await Conversations.create(
-    //   { userInput: userInput, botResponse: call.text, userId: userId },
-    //   {
-    //     returning: [
-    //       "id",
-    //       "userInput",
-    //       "botResponse",
-    //       "userId",
-    //       "createdAt",
-    //       "updatedAt",
-    //     ],
-    //   }
-    // );
+    await Conversations.create(
+      { userInput: userInput, botResponse: call.text, userId: userId },
+      {
+        returning: [
+          "id",
+          "userInput",
+          "botResponse",
+          "userId",
+          "createdAt",
+          "updatedAt",
+        ],
+      }
+    );
 
     return res.json({ success: true, response: call });
   } catch (error) {

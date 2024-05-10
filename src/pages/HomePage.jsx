@@ -46,10 +46,12 @@ const Home = () => {
     const response = await axios.post("http://localhost:3002/api/ai", {
       userInput: searchTerm,
     });
+
+    console.log(response)
     // Add chatbot response to chat log after 2 seconds
     setChatLog((prevChatLog) => [
       ...prevChatLog,
-      { type: "chatbot", message: response.data.response.text },
+      { type: "chatbot", message: response.data.response },
     ]);
     setIsLoading(false);
   };
