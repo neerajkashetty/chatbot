@@ -16,9 +16,6 @@ const docLoader = async (req, res) => {
     const { HuggingFaceTransformersEmbeddings } = await import(
       "@langchain/community/embeddings/hf_transformers"
     );
-    const { RecursiveCharacterTextSplitter } = await import(
-      "langchain/text_splitter"
-    );
     const { StringOutputParser } = await import(
       "@langchain/core/output_parsers"
     );
@@ -46,11 +43,12 @@ const docLoader = async (req, res) => {
     );
 
     const llamaPath = "./LLM/llama-2-7b-chat.Q2_K.gguf";
-    const pdfpath = "./LLM/KnowledgeBase/test.pdf";
+    // const pdfpath = "./LLM/KnowledgeBase/test.pdf";
 
     // const model = new LlamaCpp({ modelPath: llamaPath, temperature: 0 });
     const model = new ChatGroq({
       apiKey: process.env.GROQ_API_KEY,
+      modelName: "llama3-70b-8192",
     });
     const pinecone = new Pinecone();
 
@@ -58,21 +56,21 @@ const docLoader = async (req, res) => {
 
     const pineconeIndex = pinecone.Index(pineconeIndexName);
 
-    const pdfContent = await extractTextfromPdf(pdfpath);
-    const splitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 100,
-      chunkOverlap: 10,
-      separators: [",", ".", "!", "?", "\n"],
-    });
+    // const pdfContent = await extractTextfromPdf(pdfpath);
+    // const splitter = new RecursiveCharacterTextSplitter({
+    //   chunkSize: 100,
+    //   chunkOverlap: 10,
+    //   separators: [",", ".", "!", "?", "\n"],
+    // });
 
-    const output = await splitter.createDocuments([pdfContent]);
-    const texts = output.map((doc) => doc.pageContent);
+    // const output = await splitter.createDocuments([pdfContent]);
+    // const texts = output.map((doc) => doc.pageContent);
 
     const embeddings = new HuggingFaceTransformersEmbeddings({
       modelName: "Xenova/all-MiniLM-L6-v2",
     });
 
-    const response = await embeddings.embedDocuments(texts);
+    // const response = await embeddings.embedDocuments(texts);
 
     //  console.log(response);
 
@@ -107,19 +105,19 @@ const docLoader = async (req, res) => {
 
     console.log(call);
 
-    await Conversations.create(
-      { userInput: userInput, botResponse: call.text, userId: userId },
-      {
-        returning: [
-          "id",
-          "userInput",
-          "botResponse",
-          "userId",
-          "createdAt",
-          "updatedAt",
-        ],
-      }
-    );
+    // await Conversations.create(
+    //   { userInput: userInput, botResponse: call, userId: userId },
+    //   {
+    //     returning: [
+    //       "id",
+    //       "userInput",
+    //       "botResponse",
+    //       "userId",
+    //       "createdAt",
+    //       "updatedAt",
+    //     ],
+    //   }
+    // );
 
     return res.json({ success: true, response: call });
   } catch (error) {
@@ -127,6 +125,54 @@ const docLoader = async (req, res) => {
     return res
       .status(500)
       .json({ success: false, error: "Internal server error" });
+  }
+};
+
+const addDocumentsToPinecone = async (req, res) => {
+  try {
+    const { Pinecone } = await import("@pinecone-database/pinecone");
+    const { PineconeStore } = await import("@langchain/pinecone");
+    const { HuggingFaceTransformersEmbeddings } = await import(
+      "@langchain/community/embeddings/hf_transformers"
+    );
+    const { RecursiveCharacterTextSplitter } = await import(
+      "langchain/text_splitter"
+    );
+    const { pdfPath, pineconeIndexName } = req.body;
+
+    //const pdfPath = "./LLM/KnowledgeBase/test.pdf";
+
+    const pinecone = new Pinecone();
+    const pineconeIndex = pinecone.Index(pineconeIndexName);
+
+    const pdfContent = await extractTextfromPdf(pdfPath);
+
+    const splitter = new RecursiveCharacterTextSplitter({
+      chunkSize: 100,
+      chunkOverlap: 10,
+      separators: [",", ".", "!", "?", "\n"],
+    });
+    const output = await splitter.createDocuments([pdfContent]);
+    const texts = output.map((doc) => doc.pageContent);
+
+    // Embed documents
+    const embeddings = new HuggingFaceTransformersEmbeddings({
+      modelName: "Xenova/all-MiniLM-L6-v2",
+    });
+    const response = await embeddings.embedDocuments(texts);
+
+    // Create Pinecone store
+    const vectorstore = await PineconeStore.fromExistingIndex(embeddings, {
+      pineconeIndex: pineconeIndex,
+    });
+
+    // Add embedded documents to the Pinecone index
+    await vectorstore.addDocuments(output);
+
+    console.log("Documents added to Pinecone index successfully.");
+  } catch (error) {
+    console.error("Error adding documents to Pinecone index:", error);
+    throw error;
   }
 };
 
@@ -143,4 +189,5 @@ async function extractTextfromPdf(pdfpath) {
 
 module.exports = {
   docLoader,
+  addDocumentsToPinecone,
 };

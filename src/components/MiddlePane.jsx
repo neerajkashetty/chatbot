@@ -58,11 +58,10 @@ const chatContainerRef = useRef(null);
           <Lottie animationData={Robot} loop={true} className="w-60"/>
         </div>
         </div>
-
-        <div className="grid sm:grid-cols-2 gap-4 top-[8rem] relative h-[10rem] lg:h-2/5 overflow-hidden items-center rounded-lg">
+        <div className="grid sm:grid-cols-2 gap-4 top-[8rem]  relative h-[10rem] lg:h-2/5 overflow-hidden items-center rounded-lg">
           {customprompt.map((custom) => (
-            <div className="flex hover:bg-zinc-700 border-gray-300 overflow-invisible border sm:h-4/5 rounded-lg opacity-1">
-              <button className=" h-16 flex flex-col">
+            <div className="flex border-gray-300 group hover:bg-zinc-700 hover:text-zinc-300 overflow-invisible border sm:h-4/5 rounded-lg opacity-1">
+              <button className="basis-full p-2 h-16 flex flex-col" onClick={()=> handleSend(custom.title)}>
                 <p className="text-white ml-2  font-bold text-sm ">
                  {custom.title}
                 </p>
@@ -70,7 +69,7 @@ const chatContainerRef = useRef(null);
                   {custom.Example}
                 </p>
               </button>
-              <div className="hover:fill-gray-500">
+              <div className="relative justify-end p-2 flex items-center invisible group-hover:visible  right-0">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -146,7 +145,7 @@ const chatContainerRef = useRef(null);
         <button
           type="submit"
           className="flex justify-end bg-transparent border-none"
-          onClick={handleSend}
+          onClick={() => handleSend(searchTerm)}
         >
           <img src={sendBtn} alt="send" />
         </button>

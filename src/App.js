@@ -3,6 +3,7 @@ const { sequelize } = require("../sequelize/models");
 const cors = require("cors");
 const { signUp, Login } = require("../controllers/userController");
 const { docLoader } = require("../controllers/docLoader");
+const { conversation } = require("../controllers/conversation");
 
 //hjhfjsdhf
 
@@ -21,6 +22,8 @@ app.use("/api/signUp", signUp);
 app.use("/api/Login", Login);
 
 app.use("/api/ai", docLoader);
+
+app.use("/api/conversations", conversation);
 
 const verify = require("../routes/verifyRoute");
 app.use("/api/user", verify);

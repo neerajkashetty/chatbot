@@ -32,6 +32,7 @@ const RightPane = () => {
       }
       setUploadedFiles((prevFiles) => [...prevFiles, selectedFile]);
       event.target.value = null;
+      console.log(uploadedFiles)
     }
   };
 

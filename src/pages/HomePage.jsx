@@ -9,10 +9,6 @@ const Home = () => {
   const [chatLog, setChatLog] = useState([]);
   const [searchTerm, setSearchTerm] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [previousChats, setPreviousChats] = useState([]);
-  const [currentTitle, setCurrentTitle] = useState(null);
-  const [chatbotResponse, setChatbotResponse] = useState(null);
-
   const [isRightPaneVisible, setIsRightPaneVisible] = useState(false);
 
   const toggleRightPane = () => {
@@ -23,28 +19,26 @@ const Home = () => {
     setSearchTerm(event.target.value);
   };
 
-  const handleSend = async () => {
-    if (searchTerm.trim() !== "") {
+  const handleSend = async (data) => {
+    const messageToSend = data ? data : searchTerm;
+    console.log(messageToSend)
+  
+    if (messageToSend.trim() !== "") {
       setChatLog((prevChatLog) => [
         ...prevChatLog,
-        { type: "user", message: searchTerm },
+        { type: "user", message: messageToSend },
       ]);
       setSearchTerm("");
       // Trigger delayed chatbot response
       setIsLoading(true);
-      delayedChatbotResponse();
+      delayedChatbotResponse(messageToSend);
     }
   };
 
-  const handleChatList = (uniqueTitle) => {
-    setCurrentTitle(uniqueTitle);
-    setChatbotResponse(null);
-    setSearchTerm(null);
-  };
 
-  const delayedChatbotResponse = async () => {
+  const delayedChatbotResponse = async (messageToSend) => {
     const response = await axios.post("http://localhost:3002/api/ai", {
-      userInput: searchTerm,
+      userInput: messageToSend,
     });
 
     console.log(response)
@@ -56,45 +50,61 @@ const Home = () => {
     setIsLoading(false);
   };
 
+
+  const ConversationsOfUser = async () =>{
+    const combinedChatLog = [];
+
+    const response = await axios.post("http://localhost:3002/api/conversations", {
+      userId: 24,
+    })
+
+    console.log(response)
+    const conversations = response.data.data;
+
+    if(conversations){
+    
+    conversations.forEach((conversation) => {
+
+      combinedChatLog.push({
+        type: "user",
+        message: conversation.userInput,
+        id: conversation.id,
+      });
+    
+      // Push the bot response to the combined chat log
+      combinedChatLog.push({
+        type: "chatbot",
+        message: conversation.botResponse,
+        id: conversation.id,
+      });
+    });
+    
+    // Update the chat log state
+    setChatLog((prevChatLog) => [
+      ...prevChatLog,
+     //...combinedChatLog,
+    ]);
+    console.log(chatLog)
+  }else{
+    console.log("New user")
+  }
+  }
+
   useEffect(() => {
-    if (!currentTitle && chatbotResponse !== null) {
-      console.log("What is the current title", currentTitle);
-    }
-    if (currentTitle && chatbotResponse !== null) {
-      setPreviousChats((previousChats) => [
-        ...previousChats,
-        {
-          title: currentTitle,
-          type: "user",
-        },
-        {
-          title: currentTitle,
-          content: chatbotResponse,
-          type: "chatbot",
-        },
-      ]);
-    }
-  }, [chatbotResponse, currentTitle]);
+    ConversationsOfUser();// eslint-disable-next-line
+  }, []);
 
   const createNewChat = () => {
-    setChatbotResponse(null);
-    setChatLog([]);
-    setSearchTerm(null);
-    setCurrentTitle(null);
+   setChatLog([])
+   setSearchTerm(null)
+
+    
   };
 
-  const currentChat = previousChats.filter(
-    (previousChat) => previousChat.title === currentTitle
-  );
-  const uniqueTitles = ["skadha", "kjashkjfh", "kjahfkjafh"];
+  
 
   return (
-    <div className="relative h-screen w-full bg-zinc-800 flex overflow-x-hidden lg:overflow-x-visible">
-      <LeftPane
-        createNewChat={createNewChat}
-        handleChatList={handleChatList}
-        uniqueTitles={uniqueTitles}
-      />
+    <div className="relative h-screen w-full bg-zinc-800 flex overflow-x-hidden overflow-y-hidden">
       <MiddlePane
         chatLog={chatLog}
         searchTerm={searchTerm}
@@ -102,9 +112,13 @@ const Home = () => {
         handleSend={handleSend}
         handleChange={handleChange}
       />
-      <div className="lg:hidden right-2 top-2 absolute">
+      <LeftPane
+        createNewChat={createNewChat}
+        isRightPaneVisible={isRightPaneVisible}
+      />
+      <div className="lg:hidden right-2 w-8 h-8 absolute border-1 m-4  shadow-md  shadow-zinc-700/100 rounded-lg border-gray-300 ">
         {!isRightPaneVisible && (
-          <button  onClick={toggleRightPane}>
+          <button className="m-1" onClick={toggleRightPane}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
