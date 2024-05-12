@@ -10,6 +10,7 @@ const Home = () => {
   const [searchTerm, setSearchTerm] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isRightPaneVisible, setIsRightPaneVisible] = useState(false);
+  const [chats , setChats] = useState([]);
 
   const toggleRightPane = () => {
     setIsRightPaneVisible(!isRightPaneVisible);
@@ -22,6 +23,8 @@ const Home = () => {
   const handleSend = async (data) => {
     const messageToSend = data ? data : searchTerm;
     console.log(messageToSend)
+    
+    
   
     if (messageToSend.trim() !== "") {
       setChatLog((prevChatLog) => [
@@ -32,6 +35,11 @@ const Home = () => {
       // Trigger delayed chatbot response
       setIsLoading(true);
       delayedChatbotResponse(messageToSend);
+      setChats((prevChats) => [
+        messageToSend,
+        ...prevChats.reverse()
+      ])
+
     }
   };
 
@@ -40,6 +48,7 @@ const Home = () => {
     const response = await axios.post("http://localhost:3002/api/ai", {
       userInput: messageToSend,
     });
+
 
     console.log(response)
     // Add chatbot response to chat log after 2 seconds
@@ -97,6 +106,8 @@ const Home = () => {
   const createNewChat = () => {
    setChatLog([])
    setSearchTerm(null)
+   setIsLoading(false)
+   console.log('cloick')
 
     
   };
@@ -116,9 +127,9 @@ const Home = () => {
         createNewChat={createNewChat}
         isRightPaneVisible={isRightPaneVisible}
       />
-      <div className="lg:hidden right-2 w-8 h-8 absolute border-1 m-4  shadow-md  shadow-zinc-700/100 rounded-lg border-gray-300 ">
+      <div className="lg:hidden right-2 w-8 h-8 absolute border-1 m-4 active:translate-y-1 shadow-md  shadow-zinc-700/100 rounded-lg border-gray-300 ">
         {!isRightPaneVisible && (
-          <button className="m-1" onClick={toggleRightPane}>
+          <button className="m-1 " onClick={toggleRightPane}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -163,7 +174,9 @@ const Home = () => {
             : "absolute right-0 top-0 flex flex-col h-screen p-8 border-1 bg-zinc-900 lg:translate-x-1 lg:relative transition-all delay-300 duration-500 translate-x-full"
         }`}
       >
-        <RightPane />
+        <RightPane 
+         chats= {chats}
+        />
       </div>
     </div>
   );

@@ -3,9 +3,10 @@ import { useState } from "react";
 import { usernameState } from "../atoms/user";
 import { useRecoilState } from "recoil";
 
-const RightPane = () => {
+const RightPane = ({chats}) => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
-
+  
+  const Previouschats = ["What is Newtons third law", "Where is the UC main Campus", "What are the facilites availabel"]
   const [username, setUserName] = useRecoilState(usernameState);
 
   const onLogOut = () => {
@@ -47,34 +48,27 @@ const RightPane = () => {
     <div className="flex flex-col items-center lg:relative">
       <Menu
         as="div"
-        className="bg-gray-600/50 shadow-md rounded-md border-white shadow hover:cursor-pointer flex justify-between w-44 h-12 mt-5 absolute"
+        className="bg-zinc-900/100 shadow rounded-lg flex  basis-6 border-gray-300 shadow-zinc-700/100 hover:cursor-pointer"
       >
+        <div className="bg-zinc-700 shadow-md h-8 m-1 w-8 flex items-center justify-center rounded-3xl text-white text-center font-bold">N</div>
         <div>
-          <Menu.Button className="flex font-bold text-gray-200 ml-2 mt-3 text-sm text-left w-full mb-4">
+          <Menu.Button className="flex font-bold  text-gray-300  text-sm text-left w-full p-2">
             {" "}
-            {username.user}
-            <div className="ml-1 ">
-              <svg
-                className="fill-black bg-black"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                class="w-5 h-5"
-              >
-                <path
-                  fill-rule="evenodd"
-                  d="M12.53 16.28a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 14.69l6.97-6.97a.75.75 0 1 1 1.06 1.06l-7.5 7.5Z"
-                  clip-rule="evenodd"
-                />
-              </svg>
-            </div>
+           <p >{username.user}</p> 
           </Menu.Button>
         </div>
         <div>
-          <Menu.Items className="absolute bg-gray-300 right-0 mt-12 ml-36  w-56 origin-top-right  rounded-md bg-blue shadow-lg ring-1 ring-black/5 focus:outline-none">
+          <Menu.Items className="absolute bg-zinc-800 right-0 mt-12  shadow-md shadow-zinc-700/100 w-full rounded-md">
             <div className="px-1 py-1">
+            <Menu.Item>
+                <div className="flex bg-gray text-gray-300 font-semibold hover:cursor-text text-sm p-2">
+                <p >neeraj.kasheety29@gmail.com</p>
+                </div>      
+              </Menu.Item>
+              <hr className="border-gray-600 my-1 mt-2" />
+
               <Menu.Item>
-                <div className="flex bg-gray text-black font-semibold text-sm w-56 mt-2 z-50">
+                <div className="flex text-gray-300 hover:bg-zinc-700 rounded-lg font-semibold text-sm w-full p-2 items-center justify-start">
                   Edit profile
                   <div className="ml-1">
                     <svg
@@ -95,7 +89,7 @@ const RightPane = () => {
                 </div>
               </Menu.Item>
               <Menu.Item>
-                <div className="bg-gray flex text-black font-semibold text-sm w-56 mt-3 z-50">
+                <div className="text-gray-300 hover:bg-zinc-700 rounded-lg flex text-black font-semibold text-sm p-2 h-full  z-50">
                   Settings
                   <div className="ml-1">
                     <svg
@@ -120,10 +114,10 @@ const RightPane = () => {
                   </div>
                 </div>
               </Menu.Item>
-              <hr className="border-gray-300 my-1 mt-2" />
+              <hr className="border-gray-600 my-1 mt-2" />
 
               <Menu.Item>
-                <div className="flex bg-gray text-black font-semibold  text-sm w-56 pb-2 mt-3 z-50">
+                <div className="flex text-gray-300 hover:bg-zinc-700 rounded-lg font-semibold text-sm p-2">
                   <button onClick={onLogOut}>Logout</button>
                   <div className="ml-2">
                     <svg
@@ -149,33 +143,40 @@ const RightPane = () => {
         </div>
       </Menu>
 
-      <div className="flex mb-4">
-        <h2 className="text-lg font-semibold mb-4 mt-52 ml-16 text-blue-400">
+      <div className="w-full basis-96 m-4 bg-zinc-800 rounded-md shadow-md h-max overflow-hidden scroll-smooth shadow-zinc-700 border-1 border-gray-300">
+        <div className="text-gray-300 text-lg font-bold">Chats</div>
+        <div className="w-full h-full overflow-y-scroll scroll-m-0 text-start">
+      <div className="text-sm p-1 text-gray-400 font-semibold">Today</div>
+      {
+        chats.map((chat, index)=> (
+          <button key={index} className="hover:bg-zinc-700 scroll-smooth text-gray-200 text-start flex flex-col w-full max-w-full rounded-lg text-sm p-2"> {chat}</button>
+        ))
+      }
+      <div className="text-sm p-1 text-gray-400 font-semibold" >Yesterday</div>
+      {
+        Previouschats.map((chat, index)=> (
+          <button key={index} className="hover:bg-zinc-700 scroll-smooth text-gray-200 flex w-full text-start rounded-lg text-sm p-2"> {chat}</button>
+        ))
+      }
+      </div>
+      </div>
+
+      <div className="flex flex-col basis-36 ">
+        <h2 className="text-lg font-semibold p-2 text-center text-gray-400">
           Knowledge Base
         </h2>
-      </div>
-      <div className="rounded-md ml-10 w-56 bg-gray-600/50 h-1/2">
-        <label>
-          <p className="font-semibold text-center text-white hover:subpixel-antialiased">
-            Documents for your bot
-          </p>
-          <p className="text-gray-400 text-xs non-italic px-8 pt-4 font-medium">
-            Please upload the documents here (Accepted File Types: .Pdf, .Doc,
-            .Docx). The maximum file size for each upload is 5MB. Maximum number
-            of file uploads are 5.
-          </p>
-        </label>
+        <div className="rounded-md flex flex-col items-center justify-center w-56 bg-zinc-800 border-1 shadow-md shadow-zinc-700 h-4/5">
         <div>
-          <label htmlFor="fileInput" className="cursor-pointer">
-            <div className="p-8 mt-12 ml-12 rounded-md border-2 border-blue-300 w-1/2 h-1/4 border-dotted outline-4">
-              <div className="ml-2">
+          <label htmlFor="fileInput" className="cursor-pointer flex items-center justify-center ">
+            <div className="p-4 rounded-md border-2  border-blue-300 h-1/12 border-dotted outline-4">
+              <div className="ml-2 flex items-center justify-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
                   strokeWidth="1.5"
                   stroke="currentColor"
-                  className="w-4 h-4"
+                  className="w-4 h-4 text-white font-bold"
                 >
                   <path
                     strokeLinecap="round"
@@ -184,8 +185,8 @@ const RightPane = () => {
                   />
                 </svg>
               </div>
-              <div className="absolute justify-start align-text-top w-16">
-                <p className="text-xs text-blue-300 font-semibold">Add files</p>
+              <div className="justify-start align-text-top w-16">
+                <p className="text-xs text-center text-blue-300 font-semibold">Add files</p>
               </div>
             </div>
           </label>
@@ -196,20 +197,17 @@ const RightPane = () => {
             className="hidden"
           />
         </div>
-        {uploadedFiles && (
-        <div className="w-56 h-auto bg-gray-600/25 mt-10 rounded-b-md">
-          <h3 className="text-xs font-semibold text-gray-200">
-            Uploaded Documents:
-          </h3>
-          <hr className="border-gray-400 border-dashed my-1 mt-2" />
-          {uploadedFiles.map((file, index) => (
-            <div key={index} className="flex">
+      </div>
+      <div className="absolute mt-36">
+        <p className="text-gray-400 text-md font-bold text-center mt-2 "> Uploaded Files</p>
+      {uploadedFiles.map((file, index) => (
+            <div key={index} className="flex ">
               <p className="flex text-xs font-bold text-gray-200 mt-4">{`${
                 index + 1
               }. ${file.name}`}</p>
               <div className="mt-2 ml-auto">
                 <svg
-                  className="cursor-pointer mt-3 w-3 h-3"
+                  className="cursor-pointer text-white font-bold mt-2 ml-2 w-4 h-4"
                   onClick={() => handleDeleteFile(index)}
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -226,11 +224,16 @@ const RightPane = () => {
               </div>
             </div>
           ))}
-        </div>
-        )}
+          </div>
       </div>
     </div>
   );
+
+  
 };
 
+
+
 export default RightPane;
+
+
