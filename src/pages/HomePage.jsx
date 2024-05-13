@@ -23,8 +23,6 @@ const Home = () => {
   const handleSend = async (data) => {
     const messageToSend = data ? data : searchTerm;
     console.log(messageToSend)
-    
-    
   
     if (messageToSend.trim() !== "") {
       setChatLog((prevChatLog) => [
@@ -48,8 +46,6 @@ const Home = () => {
     const response = await axios.post("http://localhost:3002/api/ai", {
       userInput: messageToSend,
     });
-
-
     console.log(response)
     // Add chatbot response to chat log after 2 seconds
     setChatLog((prevChatLog) => [
