@@ -1,19 +1,26 @@
-const JWT = require('jsonwebtoken')
+const JWT = require("jsonwebtoken");
+const fs = require("fs");
+const { Navigate } = require("react-router-dom");
 
-async function validateToken(req , res, next){
+async function validateToken(req, res, next) {
+  const privateKey = fs.readFileSync("./jwtRS256.key", "utf-8");
 
-    const authToken = req.headers("authorization")
+  const authToken = req.headers["authorization"];
 
-    if(authToken == null || authToken == undefined){
-        return res.json({sucess: false , Message :"Access denied"})
+  const parse = JSON.parse(authToken);
+
+  if (!authToken) {
+    return res.json({ success: false, message: "Access denied, no jwt" });
+  }
+
+  JWT.verify(parse, "hello", { algorithms: "HS256" }, async (err, token) => {
+    if (err) {
+      console.log("JWT Verification error:", err);
+      return res.status(401).json({ success: false, message: "Invalid Token" });
     }
-    JWT.verify(authToken, privateKey, async(err, token) =>{
-        if(err) return({sucess:false , Message:"Error"})
-        req.id = token;
-    console.log(req.id)
-    next();
-    } )
-
+    req.id = token;
+    return res.status(200).json({ success: true, message: "Token is valid" });
+  });
 }
 
 module.exports = validateToken;

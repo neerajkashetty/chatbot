@@ -35,9 +35,9 @@ const RegisterPage = () => {
     }
   }, [navigate]);
 
-useEffect(()=>{
-  onSubmit();
-}, [onSubmit]);
+// useEffect(()=>{
+//   onSubmit();
+// }, [onSubmit]);
 
   
   return(

@@ -21,3 +21,9 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+#Large Language model
+/LLM
+
+.env
+jwtRS256.key

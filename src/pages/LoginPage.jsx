@@ -1,14 +1,20 @@
 import { Link} from 'react-router-dom';
-import { useEffect, useCallback } from 'react';
+import { useCallback } from 'react';
 import {useForm} from 'react-hook-form';
 import axios from 'axios';
-
+import { useRecoilState } from 'recoil';
+import { usernameState } from '../atoms/user';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const LoginPage = () => {
   const {
     register, 
     handleSubmit
   } = useForm();
 
+  const [username,setUserName] = useRecoilState(usernameState)
+
+  
   const onSubmit = useCallback(async (data) => {
     try {
       if (data && data.email && data.password) {
@@ -18,32 +24,48 @@ const LoginPage = () => {
         });
         console.log(response)
   
-        if (response.status === 200) {
+        if (response.data.sucess) {
           localStorage.clear()
           localStorage.setItem("token", JSON.stringify(response.data.data.authtoken))
-          window.location = "/home"
+          console.log(response.data.data.username)
+          toast.success("Authentication Successful !", {
+            render: "Authenticated",
+            type: "success",
+            autoClose: 2000,
+            position: "top-center"
+          });
+          setUserName({
+            isAuthenticated: true,
+            user :localStorage.setItem('username', response.data.data.username)})
+          window.location = '/home'
+          console.log(username)
         } else {
           console.error('Login issues', response.statusText);
         }
-  
-        console.log(response);
       } else {
         console.error('Invalid form data:', data);
       }
     } catch (error) {
+      toast.error( "Incorrect Email or Password",{
+        type: "error",
+        autoClose: 3000,
+        position: "top-center"
+      }
+
+      )
       console.error('An error occurred:', error.message);
     }
-  }, []);
-useEffect(()=>{
-  onSubmit();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-},[])
+  },
+   // eslint-disable-next-line react-hooks/exhaustive-deps
+  [setUserName]);
+
 
 
 
   return (
     <>
       <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+        <ToastContainer/>
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
             Login in to your account
@@ -53,7 +75,7 @@ useEffect(()=>{
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <div>
               <label
-                for="email"
+                htmlFor="email"
                 className="block text-sm font-medium leading-6 text-gray-900"
               >
                 Email address
@@ -63,7 +85,7 @@ useEffect(()=>{
                   id="email"
                   name="email"
                   type="email"
-                  autocomplete="email"
+                  autoComplete="email"
                   {...register('email', {required: true}) }
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -74,7 +96,7 @@ useEffect(()=>{
             <div>
               <div className="flex items-center justify-between">
                 <label
-                  for="password"
+                  htmlFor="password"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Password
@@ -92,7 +114,7 @@ useEffect(()=>{
                   id="password"
                   name="password"
                   type="password"
-                  autocomplete="current-password"
+                  autoComplete="current-password"
                   {...register('password',{required:true})}
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -117,6 +139,7 @@ useEffect(()=>{
           </Link>
         </p>
       </div>
+
       </div>
   </>
   );

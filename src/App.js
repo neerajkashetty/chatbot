@@ -1,26 +1,37 @@
-const express = require('express')
-const {sequelize} = require('../sequelize/models')
-const cors = require('cors'); 
-const { signUp, Login } = require('../controllers/userController');
+const express = require("express");
+const { sequelize } = require("../sequelize/models");
+const cors = require("cors");
+const { signUp, Login } = require("../controllers/userController");
+const {
+  docLoader,
+  addDocumentsToPinecone,
+} = require("../controllers/docLoader");
+const { conversation } = require("../controllers/conversation");
 
-
-
+//hjhfjsdhf
 
 //creating the instance of the express with the variable app
 const app = express();
 
 //telling the app to accept the json data else it will throw an error of the typeError cannot read properties of undefined
-app.use(express.json())
+app.use(express.json());
 
 //When a web application running at one origin (e.g., http://localhost:3000) tries to make a request to a different origin (e.g., http://localhost:3002), the browser enforces a security policy known as the Same-Origin Policy.
 //To resolve this issue, you need to configure your server (http://localhost:3002) to include the appropriate CORS headers in its responses.
-app.use(cors())
+app.use(cors());
 
-app.use('/api/signUp', signUp)
+app.use("/api/signUp", signUp);
 
-app.use('/api/Login', Login)
+app.use("/api/Login", Login);
 
+app.use("/api/ai", docLoader);
 
+app.use("/api/addDocs", addDocumentsToPinecone);
+
+app.use("/api/conversations", conversation);
+
+const verify = require("../routes/verifyRoute");
+app.use("/api/user", verify);
 
 // app.get('/user', (req, res) => {
 //     res.send(user)
@@ -40,19 +51,16 @@ app.use('/api/Login', Login)
 // })
 
 const connectDB = async () => {
-    try {
-      await sequelize.authenticate();
-      console.log("Successfully connected to database.");
-    } catch (error) {
-      console.log("An error occured while connecting to database, \n", error);
-      process.exit(1);
-    }
-  };
-  (async () => {
-    await connectDB();
-  
-    app.listen(3002, () =>
-      console.log("Server running on the port",  3002)
-    );
-  })();
-  
+  try {
+    await sequelize.authenticate();
+    console.log("Successfully connected to database.");
+  } catch (error) {
+    console.log("An error occured while connecting to database, \n", error);
+    process.exit(1);
+  }
+};
+(async () => {
+  await connectDB();
+
+  app.listen(3002, () => console.log("Server running on the port", 3002));
+})();
