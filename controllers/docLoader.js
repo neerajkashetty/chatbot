@@ -42,7 +42,6 @@ const docLoader = async (req, res) => {
     );
 
     const llamaPath = "./LLM/llama-2-7b-chat.Q2_K.gguf";
-
     const model = new ChatGroq({
       apiKey: process.env.GROQ_API_KEY,
       modelName: "llama3-70b-8192",
