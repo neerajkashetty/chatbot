@@ -29,7 +29,7 @@ const docLoader = async (req, res) => {
       - Provide a response of up to two lines if the question is not related to the context.
       - If unable to answer based on the provided context, respond with "I'm sorry, the UC Knowledge Base currently lacks the necessary information."
     3. Your response must include only the context.
-    4. You can also sight the sources with numbers in the response 
+    4. You might give points with markdown at the front if it is required and highlight the main key points with bold and some secondary key points with italics.. 
 
     Question: {question}
 
@@ -77,7 +77,15 @@ const docLoader = async (req, res) => {
       new StringOutputParser(),
     ]);
 
-    console.log(docs);
+    const getSources = (docs) =>
+      docs.map((doc) => {
+        const related = [doc.metadata.source];
+        return related;
+      });
+
+    const sources = getSources(docs);
+
+    console.log(sources);
 
     const call = await chain.invoke(userInput);
 
@@ -99,7 +107,7 @@ const docLoader = async (req, res) => {
     //   }
     // );
 
-    return res.json({ success: true, response: call });
+    return res.json({ success: true, response: call, sources: sources });
   } catch (error) {
     console.error("Error in docLoader:", error);
     return res

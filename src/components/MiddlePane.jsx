@@ -5,18 +5,21 @@ import userIcon from "../assets/user.png";
 import TypingAnimation from "./TypingAnimation";
 import Robot from "../../src/assets/Robot.json";
 import Lottie from "lottie-react";
-import {Link} from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
+
 const MiddlePane = ({
   chatLog,
   searchTerm,
   isLoading,
   handleSend,
   handleChange,
+  sources
 }) => {
   const chatContainerRef = useRef(null);
-  function something ()  {
-    console.log('Clock')
-  }
+ 
+  const markdown = `
+-Join an upbeat cardio workout  with energetic staff and get moving with playlists from Jeremy, -Sehrish, David, Alanna, Amber, Mindy, Sarah, and Halie Jo.\n\n- **Explore mobility videos/Yoga videos** and work through them for 20 minutes or longer with playlists from Amber, Mindy, Sarah, and Halie Jo.\n\n- **Try swimming-inspired workouts** without a pool with Autumn's playlist.\n\n- **Check out the top 6 fitness app recommendations** from our fitness professionals.\n\n- **Learn about the pros and cons of fitness apps** like Active by POP Sugar and Apple Fitness+."
+  `
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -47,18 +50,7 @@ const MiddlePane = ({
     },
   ];
 
-  const sources = [
-    {
-      name: "UC Campus Rec",
-      url: "https://js.langchain.com/docs/use_cases/question_answering/sources",
-      description: "hi WHatis it skfndjkf"
-    },
-    {
-      name: "ITAC UC",
-      url: "https://js.langchain.com/docs/use_cases/question_answering/sources",
-      description: "hi WHatis it skfndjkf"
-    },
-  ];
+
 
   return (
     <div className="flex flex-col items-center w-screen relative justify-center">
@@ -118,16 +110,16 @@ const MiddlePane = ({
             key={index}
             className={` ${
               message.type === "user" ? "" : "bg-white/[.05] rounded-md"
-            } chat m-4 py-8 px-12 text-sm  flex items-start text-white text-justify`}
+            } chat m-4 py-8 px-12 flex items-start`}
           >
             <img
-              className="chatImg object-cover w-10 mr-8 rounded-md"
+              className="chatImg  object-cover w-10 mr-8 rounded-md"
               src={message.type === "user" ? userIcon : robotImageLogo}
               alt=""
             />
-            <p className="text">{message.message}</p>
+            <div className="text text-gray-300 text-sm markdown"><ReactMarkdown children={message.message}></ReactMarkdown></div>
           </div>
-          {message.type === "user" && !isLoading && index === 0 &&(
+          {message.type === "user" && !isLoading  &&(
           <div>
         <div className="text-white font-bold text-md flex m-4 ">
           <svg
@@ -149,9 +141,9 @@ const MiddlePane = ({
           </div>
           <div className="grid grid-cols-2 w-2/3" >
             {sources.map((source) => (
-              <div className="ml-6 p-2 rounded-lg shadow-md shadow-gray-600 border-1 border-gray-300 hover:bg-zinc-700 bg-zinc-800">
-                <p className="text-gray-300 font-bold text-start text-sm">{source.name}</p>
-                <a className="text-white text-xs flex" href={source.url} title={source.description} target={source.url}>{source.url}</a>
+              <div className="ml-6 p-2 rounded-lg shadow-md  overflow-hidden shadow-gray-600 border-1 border-gray-300 hover:bg-zinc-700 bg-zinc-800">
+                <p className="text-gray-300 font-bold text-start text-sm">Uc Releavants</p>
+                <a className="text-white text-xs flex" href={source} title={source} target={source}>{source}</a>
               </div>
             ))}
           </div>

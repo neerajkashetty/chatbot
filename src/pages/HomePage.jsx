@@ -10,6 +10,7 @@ const Home = () => {
   const [searchTerm, setSearchTerm] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isRightPaneVisible, setIsRightPaneVisible] = useState(false);
+  const [sources, setSources] = useState([]);
   const [chats , setChats] = useState([]);
 
   const toggleRightPane = () => {
@@ -41,17 +42,36 @@ const Home = () => {
     }
   };
 
+  const getSources = (docs) => {
+    const uniqueSources = new Set();
+  
+    docs.forEach((doc) => {
+      // Assuming each 'doc' is an array and the source is the first item in the array
+       const source = doc[0];
+      uniqueSources.add(source);
+    });
+  
+    return [uniqueSources];
+  };
+  
+
 
   const delayedChatbotResponse = async (messageToSend) => {
     const response = await axios.post("http://localhost:3002/api/ai", {
       userInput: messageToSend,
     });
-    console.log(response)
+    console.log(response.data.sources)
+
+   const sources =  getSources(response.data.sources);
+
+    
+    setSources(sources)
     // Add chatbot response to chat log after 2 seconds
     setChatLog((prevChatLog) => [
       ...prevChatLog,
       { type: "chatbot", message: response.data.response },
     ]);
+
     setIsLoading(false);
   };
 
@@ -118,6 +138,7 @@ const Home = () => {
         isLoading={isLoading}
         handleSend={handleSend}
         handleChange={handleChange}
+        sources = {sources}
       />
       <LeftPane
         createNewChat={createNewChat}
