@@ -149,7 +149,7 @@ const RightPane = ({chats}) => {
       <div className="text-sm p-1 text-gray-400 font-semibold">Today</div>
       {
         chats.map((chat, index)=> (
-          <button key={index==0} className="hover:bg-zinc-700 scroll-smooth text-gray-200 text-start flex flex-col w-full max-w-full rounded-lg text-sm p-2"> {chat}</button>
+          <button key={index === 0} className="hover:bg-zinc-700 scroll-smooth text-gray-200 text-start flex flex-col w-full max-w-full rounded-lg text-sm p-2"> {chat}</button>
         ))
       }
       <div className="text-sm p-1 text-gray-400 font-semibold" >Yesterday</div>

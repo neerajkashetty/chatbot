@@ -1,18 +1,23 @@
-const TypingAnimation = () => {
-  // Define the number of times to render the div
-  const numDivs = 4;
+import{useState, useEffect } from "react";
 
-  // Create an array of length numDivs and map over it to generate the JSX elements
-  const divs = Array.from({ length: numDivs }, (_, index) => (
-    <div key={index} className="w-full h-1 mt-2 bg-gradient-to-r rounded-lg from-zinc-400 to-gray-600 animate-pulse"></div>
-  ));
+const TypingAnimation = ( text ) => {
+  const [displayedText, setDisplayedText] = useState("");
+  const  speed = 200
 
-  // Render the array of divs
-  return (
-    <div className="flex w-full flex-col">
-      {divs}
-    </div>
-  );
+  useEffect(() => {
+    let index = 0;
+    const intervalId = setInterval(() => {
+      setDisplayedText((prev) => prev + text.toString().charAt(index));
+      index++;
+      if (index >= text.toString().length) {
+        clearInterval(intervalId);
+      }
+    }, speed);
+  
+    return () => clearInterval(intervalId);
+  }, [text, speed]);
+
+  return JSON.stringify(displayedText);
 };
 
 export default TypingAnimation;

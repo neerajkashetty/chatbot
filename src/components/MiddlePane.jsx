@@ -2,24 +2,22 @@ import React, { useEffect, useRef } from "react";
 import sendBtn from "../assets/send.svg";
 import robotImageLogo from "../assets/robot-assistant.png";
 import userIcon from "../assets/user.png";
-import TypingAnimation from "./TypingAnimation";
+import LoadingAnimation from "./LoadingAnimation";
 import Robot from "../../src/assets/Robot.json";
 import Lottie from "lottie-react";
-import ReactMarkdown from 'react-markdown';
-
+import ReactMarkdown from "react-markdown";
+import Thumsup from "../../src/assets/thumsup.svg";
+import Thumsdown from "../../src/assets/thumsdown.svg";
+import FeedBack from "./FeedBack";
 const MiddlePane = ({
   chatLog,
   searchTerm,
   isLoading,
   handleSend,
   handleChange,
-  sources
+  sources,
 }) => {
   const chatContainerRef = useRef(null);
- 
-  const markdown = `
--Join an upbeat cardio workout  with energetic staff and get moving with playlists from Jeremy, -Sehrish, David, Alanna, Amber, Mindy, Sarah, and Halie Jo.\n\n- **Explore mobility videos/Yoga videos** and work through them for 20 minutes or longer with playlists from Amber, Mindy, Sarah, and Halie Jo.\n\n- **Try swimming-inspired workouts** without a pool with Autumn's playlist.\n\n- **Check out the top 6 fitness app recommendations** from our fitness professionals.\n\n- **Learn about the pros and cons of fitness apps** like Active by POP Sugar and Apple Fitness+."
-  `
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -30,7 +28,7 @@ const MiddlePane = ({
       }
     }
   }, [chatLog]);
-
+  console.log(chatLog);
   const customprompt = [
     {
       title: "Give me Ideas",
@@ -49,8 +47,6 @@ const MiddlePane = ({
       Example: "like i am five years old",
     },
   ];
-
-
 
   return (
     <div className="flex flex-col items-center w-screen relative justify-center">
@@ -106,49 +102,71 @@ const MiddlePane = ({
       >
         {chatLog.map((message, index) => (
           <div className="flex flex-col">
-          <div
-            key={index}
-            className={` ${
-              message.type === "user" ? "" : "bg-white/[.05] rounded-md"
-            } chat m-4 py-8 px-12 flex items-start`}
-          >
-            <img
-              className="chatImg  object-cover w-10 mr-8 rounded-md"
-              src={message.type === "user" ? userIcon : robotImageLogo}
-              alt=""
-            />
-            <div className="text text-gray-300 text-sm markdown"><ReactMarkdown children={message.message}></ReactMarkdown></div>
-          </div>
-          {message.type === "user" && !isLoading  &&(
-          <div>
-        <div className="text-white font-bold text-md flex m-4 ">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="1.5"
-            stroke="currentColor"
-            class="w-6 h-6"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"
-            />
-          </svg>
-          
-          <p className="ml-1">Sources</p>
-          </div>
-          <div className="grid grid-cols-2 w-2/3" >
-            {sources.map((source) => (
-              <div className="ml-6 p-2 rounded-lg shadow-md  overflow-hidden shadow-gray-600 border-1 border-gray-300 hover:bg-zinc-700 bg-zinc-800">
-                <p className="text-gray-300 font-bold text-start text-sm">Uc Releavants</p>
-                <a className="text-white text-xs flex" href={source} title={source} target={source}>{source}</a>
+            <div
+              key={index}
+              className={` ${
+                message.type === "user" ? "text-sm flex" : "bg-white/[.05] rounded-md"
+              } chat m-4  max-w-max items-start`}
+            >
+              <img
+                className="chatImg  object-cover w-10 m-4 rounded-md"
+                src={message.type === "user" ? userIcon : 'hidden'}
+                alt=""
+              />
+              <div className="flex flex-col">
+                <div className="text text-gray-300 text-sm p-4 markdown">
+                  <ReactMarkdown children={message.message} />
+                </div>
+                {message.type !== "user" && (
+                  <div className="flex items-end gap-2 m-2  justify-end">
+                    <button className="hover:-translate-y-1 " onClick={FeedBack}>
+                      <img src={Thumsup} height={14} width={14}  alt=""/>
+                    </button>
+                    <button className="hover:-translate-y-1">
+                      <img src={Thumsdown} height={14} width={14} alt="" />
+                    </button>
+                  </div>
+                )}
               </div>
-            ))}
-          </div>
-        </div>
-        )}
+            </div>
+            {message.type === "user" && !isLoading && (
+              <div>
+                <div className="text-white font-bold text-md flex m-4 ">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="w-6 h-6"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375m16.5 0v3.75m-16.5-3.75v3.75m16.5 0v3.75C20.25 16.153 16.556 18 12 18s-8.25-1.847-8.25-4.125v-3.75m16.5 0c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125"
+                    />
+                  </svg>
+
+                  <p className="ml-1">Sources</p>
+                </div>
+                <div className="grid grid-cols-2 w-2/3">
+                  {sources.map((source) => (
+                    <div className="ml-6 p-2 rounded-lg shadow-md  overflow-hidden shadow-gray-600 border-1 border-gray-300 hover:bg-zinc-700 bg-zinc-800">
+                      <p className="text-gray-300 font-bold text-start text-sm">
+                        Uc Relevant Links
+                      </p>
+                      <a
+                        className="text-white text-xs flex"
+                        href={source}
+                        target={sources}
+                      >
+                        {source}
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         ))}
 
@@ -164,7 +182,7 @@ const MiddlePane = ({
               src={robotImageLogo}
               alt=""
             />
-              <TypingAnimation />
+            <LoadingAnimation />
           </div>
         )}
       </div>
