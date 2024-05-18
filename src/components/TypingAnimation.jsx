@@ -1,6 +1,9 @@
-import{useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
-const TypingAnimation = ( text ) => {
+const TypingAnimation = ( {text} ) => {
+    const string = JSON.stringify(text);
+    console.log(string)
+
   const [displayedText, setDisplayedText] = useState("");
   const  speed = 200
 
@@ -17,7 +20,7 @@ const TypingAnimation = ( text ) => {
     return () => clearInterval(intervalId);
   }, [text, speed]);
 
-  return JSON.stringify(displayedText);
+  return displayedText;
 };
 
 export default TypingAnimation;

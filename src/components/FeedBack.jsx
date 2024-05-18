@@ -1,43 +1,36 @@
-// import { Description, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
-// import { useState } from 'react';
+import React from 'react';
 
-// function Feedback() {
-//     let [isOpen, setIsOpen] = useState(false)
-//   return (
-//    <>
-//       <button onClick={() => setIsOpen(true)}>Open dialog</button>
-//       <Dialog open={isOpen} onClose={() => setIsOpen(false)} className="relative z-50">
-//         <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
-//           <DialogPanel className="max-w-lg space-y-4 border bg-white p-12">
-//             <DialogTitle className="font-bold">Deactivate account</DialogTitle>
-//             <Description>This will permanently deactivate your account</Description>
-//             <p>Are you sure you want to deactivate your account? All of your data will be permanently removed.</p>
-//             <div className="flex gap-4">
-//               <button onClick={() => setIsOpen(false)}>Cancel</button>
-//               <button onClick={() => setIsOpen(false)}>Deactivate</button>
-//             </div>
-//           </DialogPanel>
-//         </div>
-//       </Dialog>
-//     </>
-//   )
-// }
-
-// export default Feedback;
-
-import { Dialog, DialogPanel } from "@headlessui/react";
-import { useState } from 'react';
-
-function FeedBack() {
-  const [isOpen, setIsOpen] = useState(false);
+const FeedbackModal = ({ show, onClose }) => {
+  if (!show) {
+    return null;
+  }
 
   return (
-    <div>
-      <Dialog className="relative z-50">
-        {/* Add the Dialog content here */}
-      </Dialog>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-">
+      <div className="bg-white rounded-lg p-6 w-1/3 m-4">
+        <h2 className="text-xl mb-4">We value your feedback!</h2>
+        <textarea
+          className="w-full p-2 border rounded-md"
+          rows="4"
+          placeholder="Please leave your feedback here..."
+        ></textarea>
+        <div className="flex justify-end gap-2 mt-4">
+          <button
+            className="px-4 py-2 bg-gray-200 rounded-md"
+            onClick={onClose}
+          >
+            Cancel
+          </button>
+          <button
+            className="px-4 py-2 bg-blue-500 text-white rounded-md"
+            onClick={onClose}
+          >
+            Submit
+          </button>
+        </div>
+      </div>
     </div>
   );
-}
+};
 
-export default FeedBack;
+export default FeedbackModal;

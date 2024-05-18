@@ -8,8 +8,6 @@ const {
 } = require("../controllers/docLoader");
 const { conversation } = require("../controllers/conversation");
 
-//hjhfjsdhf
-
 //creating the instance of the express with the variable app
 const app = express();
 

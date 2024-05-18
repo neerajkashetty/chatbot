@@ -4,6 +4,7 @@ import axios from "axios";
 import RightPane from "../components/RightPane";
 import LeftPane from "../components/LeftPane";
 import MiddlePane from "../components/MiddlePane";
+import { Switch } from '@headlessui/react'
 
 const Home = () => {
   const [chatLog, setChatLog] = useState([]);
@@ -12,6 +13,7 @@ const Home = () => {
   const [isRightPaneVisible, setIsRightPaneVisible] = useState(false);
   const [sources, setSources] = useState([]);
   const [chats , setChats] = useState([]);
+  const [enabled, setEnabled] = useState(false)
 
   const toggleRightPane = () => {
     setIsRightPaneVisible(!isRightPaneVisible);
@@ -61,12 +63,8 @@ const Home = () => {
       userInput: messageToSend,
     });
     console.log(response.data.sources)
-
    const sources =  getSources(response.data.sources);
-
-    
     setSources(sources)
-    // Add chatbot response to chat log after 2 seconds
     setChatLog((prevChatLog) => [
       ...prevChatLog,
       { type: "chatbot", message: response.data.response },
@@ -96,7 +94,6 @@ const Home = () => {
         id: conversation.id,
       });
     
-      // Push the bot response to the combined chat log
       combinedChatLog.push({
         type: "chatbot",
         message: conversation.botResponse,
@@ -104,7 +101,6 @@ const Home = () => {
       });
     });
     
-    // Update the chat log state
     setChatLog((prevChatLog) => [
       ...prevChatLog,
      //...combinedChatLog,
@@ -131,9 +127,10 @@ const Home = () => {
   
 
   return (
-    <div className="relative h-screen w-full bg-zinc-800 flex overflow-x-hidden overflow-y-hidden">
+    <div className={`${enabled ? 'bg-zinc-800' : 'bg-white'} relative h-screen w-full  flex overflow-x-hidden overflow-y-hidden`}>
       <MiddlePane
         chatLog={chatLog}
+        enabled={enabled}
         searchTerm={searchTerm}
         isLoading={isLoading}
         handleSend={handleSend}
@@ -144,6 +141,21 @@ const Home = () => {
         createNewChat={createNewChat}
         isRightPaneVisible={isRightPaneVisible}
       />
+      <div className="flex">
+      <div className=" ">
+      <Switch
+        checked={enabled}
+        onChange={setEnabled}
+        className={`${enabled ? 'bg-gray-900' : 'bg-blue-300'}
+          relative inline-flex h-5 w-16 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white/75`}
+      >
+        <span
+          aria-hidden="true"
+          className={`${enabled ? 'translate-x-10' : 'translate-x-0'}
+            pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
+        />
+      </Switch>
+      </div>
       <div className="lg:hidden right-2 w-8 h-8 absolute border-1 m-4 active:translate-y-1 shadow-md  shadow-zinc-700/100 rounded-lg border-gray-300 ">
         {!isRightPaneVisible && (
           <button className="m-1 " onClick={toggleRightPane}>
@@ -182,6 +194,7 @@ const Home = () => {
             </svg>
           </button>
         )}
+      </div>
       </div>
       <div
         className={`lg:absolute lg:right-0 lg:top-0 lg:flex lg:flex-col h-screen lg:p-8 lg:border-1 lg:bg-zinc-900 transition-transform duration-400 ease-in-out

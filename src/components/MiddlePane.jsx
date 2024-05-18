@@ -1,6 +1,5 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import sendBtn from "../assets/send.svg";
-import robotImageLogo from "../assets/robot-assistant.png";
 import userIcon from "../assets/user.png";
 import LoadingAnimation from "./LoadingAnimation";
 import Robot from "../../src/assets/Robot.json";
@@ -8,7 +7,8 @@ import Lottie from "lottie-react";
 import ReactMarkdown from "react-markdown";
 import Thumsup from "../../src/assets/thumsup.svg";
 import Thumsdown from "../../src/assets/thumsdown.svg";
-import FeedBack from "./FeedBack";
+import FeedbackModal from "./FeedBack";
+import TypingAnimation from "./TypingAnimation";
 const MiddlePane = ({
   chatLog,
   searchTerm,
@@ -18,6 +18,7 @@ const MiddlePane = ({
   sources,
 }) => {
   const chatContainerRef = useRef(null);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -53,14 +54,14 @@ const MiddlePane = ({
       {chatLog.length === 0 && (
         <div className="relative top-1/4 flex flex-col h-screen items-center">
           <div className="flex ">
-            <p className="text-white basis-1/2 top-1/3  relative text-lg font-bold p-3">
-              How Can I help you Today?
+            <p className="text-white basis-1/3 top-1/3  relative text-lg font-bold p-3">
+             <TypingAnimation text= "Hoow Can I help you Today ?"/>
             </p>
             <div className="bg-zinc-800 ">
               <Lottie animationData={Robot} loop={true} className="w-60" />
             </div>
           </div>
-          <div className="grid sm:grid-cols-2 gap-4 top-[8rem]  relative h-[10rem] lg:h-2/5 overflow-hidden items-center rounded-lg">
+          <div className="grid sm:grid-cols-2 gap-4 top-[8rem] relative h-[10rem] lg:h-2/5 overflow-hidden items-center rounded-lg">
             {customprompt.map((custom) => (
               <div className="flex border-gray-300 group hover:bg-zinc-700 hover:text-zinc-300 overflow-invisible border sm:h-4/5 rounded-lg opacity-1">
                 <button
@@ -105,12 +106,14 @@ const MiddlePane = ({
             <div
               key={index}
               className={` ${
-                message.type === "user" ? "text-sm flex" : "bg-white/[.05] rounded-md"
+                message.type === "user"
+                  ? "text-sm flex"
+                  : "bg-white/[.05] rounded-md"
               } chat m-4  max-w-max items-start`}
             >
               <img
                 className="chatImg  object-cover w-10 m-4 rounded-md"
-                src={message.type === "user" ? userIcon : 'hidden'}
+                src={message.type === "user" ? userIcon : "hidden"}
                 alt=""
               />
               <div className="flex flex-col">
@@ -118,14 +121,29 @@ const MiddlePane = ({
                   <ReactMarkdown children={message.message} />
                 </div>
                 {message.type !== "user" && (
-                  <div className="flex items-end gap-2 m-2  justify-end">
-                    <button className="hover:-translate-y-1 " onClick={FeedBack}>
-                      <img src={Thumsup} height={14} width={14}  alt=""/>
+                  <div className="flex items-end gap-2 m-2 justify-end">
+                    <button
+                      className="hover:-translate-y-1 "
+                      onClick={() => setShowFeedback(true)}
+                    >
+                      <img
+                        src={Thumsup}
+                        className="text-blue-500"
+                        height={14}
+                        width={14}
+                        alt=""
+                      />
                     </button>
                     <button className="hover:-translate-y-1">
                       <img src={Thumsdown} height={14} width={14} alt="" />
                     </button>
                   </div>
+                )}
+                {showFeedback && (
+                  <FeedbackModal
+                    show={showFeedback}
+                    onClose={() => setShowFeedback(false)}
+                  />
                 )}
               </div>
             </div>
@@ -153,7 +171,7 @@ const MiddlePane = ({
                   {sources.map((source) => (
                     <div className="ml-6 p-2 rounded-lg shadow-md  overflow-hidden shadow-gray-600 border-1 border-gray-300 hover:bg-zinc-700 bg-zinc-800">
                       <p className="text-gray-300 font-bold text-start text-sm">
-                        Uc Relevant Links
+                        Relevant Links
                       </p>
                       <a
                         className="text-white text-xs flex"
@@ -177,11 +195,6 @@ const MiddlePane = ({
               "bg-white/[.05] rounded-lg m-4 w-full py-8 px-12 text-sm flex items-start text-white text-justify"
             }
           >
-            <img
-              className="chatImg object-cover w-10 mr-8 rounded-md"
-              src={robotImageLogo}
-              alt=""
-            />
             <LoadingAnimation />
           </div>
         )}
