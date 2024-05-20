@@ -127,7 +127,7 @@ const Home = () => {
   
 
   return (
-    <div className={`${enabled ? 'bg-zinc-800' : 'bg-white'} relative h-screen w-full  flex overflow-x-hidden overflow-y-hidden`}>
+    <div className={`${enabled ? 'bg-blue-100' : 'bg-zinc-800'} relative h-screen w-full  flex overflow-x-hidden overflow-y-hidden`}>
       <MiddlePane
         chatLog={chatLog}
         enabled={enabled}
@@ -146,7 +146,7 @@ const Home = () => {
       <Switch
         checked={enabled}
         onChange={setEnabled}
-        className={`${enabled ? 'bg-gray-900' : 'bg-blue-300'}
+        className={`${enabled ? 'bg-blue-300' : 'bg-gray-900'}
           relative inline-flex h-5 w-16 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white/75`}
       >
         <span
