@@ -1,6 +1,6 @@
-import { Menu } from "@headlessui/react";
+import { Menu, Switch } from "@headlessui/react";
 import { useState } from "react";
-import { usernameState } from "../atoms/user";
+import { usernameState, theme} from "../atoms/user";
 import { useRecoilState } from "recoil";
 
 const RightPane = ({chats}) => {
@@ -8,6 +8,9 @@ const RightPane = ({chats}) => {
   
   const Previouschats = ["What is Newtons third law", "Where is the UC main Campus", "What are the facilites availabel"]
   const [username, setUserName] = useRecoilState(usernameState);
+  const [enabled, setEnabled]  = useRecoilState(theme);
+
+  console.log(enabled)
 
   const onLogOut = () => {
     localStorage.clear();
@@ -43,7 +46,7 @@ const RightPane = ({chats}) => {
     );
     setUploadedFiles(updatedFiles);
   };
-
+console.log(enabled)
   return (
     <div className="flex flex-col items-center lg:relative">
       <Menu
@@ -142,6 +145,20 @@ const RightPane = ({chats}) => {
           </Menu.Items>
         </div>
       </Menu>
+      <div className="">
+      <Switch
+        checked={enabled}
+        onChange={setEnabled}
+        className={`${enabled ? 'bg-gray-900' : 'bg-blue-300'}
+          relative inline-flex shadow-md shadow-zinc-700 rounded-lg mt-8 border-1 border-gray-300 h-5 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white/75`}
+      >
+        <span
+          aria-hidden="true"
+          className={`${enabled ? 'translate-x-7' : 'translate-x-0'}
+            pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
+        />
+      </Switch>
+      </div>
 
       <div className="w-full basis-96 m-4 bg-zinc-800 rounded-md shadow-md h-max overflow-hidden scroll-smooth shadow-zinc-700 border-1 border-gray-300">
         <div className="text-gray-300 text-lg font-bold">Chats</div>

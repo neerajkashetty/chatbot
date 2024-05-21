@@ -7,3 +7,10 @@ export const usernameState = atom({
     user: localStorage.getItem("username") || "",
   },
 });
+
+export const theme = atom({
+  key: "theme",
+  default: {
+    isEnabled: false,
+  },
+});

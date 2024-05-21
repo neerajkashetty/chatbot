@@ -4,7 +4,9 @@ import axios from "axios";
 import RightPane from "../components/RightPane";
 import LeftPane from "../components/LeftPane";
 import MiddlePane from "../components/MiddlePane";
-import { Switch } from '@headlessui/react'
+import {useRecoilValue } from "recoil";
+import {theme} from "../atoms/user";
+
 
 const Home = () => {
   const [chatLog, setChatLog] = useState([]);
@@ -13,7 +15,7 @@ const Home = () => {
   const [isRightPaneVisible, setIsRightPaneVisible] = useState(false);
   const [sources, setSources] = useState([]);
   const [chats , setChats] = useState([]);
-  const [enabled, setEnabled] = useState(false)
+  const enabled = useRecoilValue(theme)
 
   const toggleRightPane = () => {
     setIsRightPaneVisible(!isRightPaneVisible);
@@ -127,7 +129,7 @@ const Home = () => {
   
 
   return (
-    <div className={`${enabled ? 'bg-blue-100' : 'bg-zinc-800'} relative h-screen w-full  flex overflow-x-hidden overflow-y-hidden`}>
+    <div className={`${enabled ? 'bg-zinc-800' : 'bg-blue-200'} relative h-screen w-full  flex overflow-x-hidden overflow-y-hidden`}>
       <MiddlePane
         chatLog={chatLog}
         enabled={enabled}
@@ -142,20 +144,6 @@ const Home = () => {
         isRightPaneVisible={isRightPaneVisible}
       />
       <div className="flex">
-      <div className=" ">
-      <Switch
-        checked={enabled}
-        onChange={setEnabled}
-        className={`${enabled ? 'bg-blue-300' : 'bg-gray-900'}
-          relative inline-flex h-5 w-16 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white/75`}
-      >
-        <span
-          aria-hidden="true"
-          className={`${enabled ? 'translate-x-10' : 'translate-x-0'}
-            pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
-        />
-      </Switch>
-      </div>
       <div className="lg:hidden right-2 w-8 h-8 absolute border-1 m-4 active:translate-y-1 shadow-md  shadow-zinc-700/100 rounded-lg border-gray-300 ">
         {!isRightPaneVisible && (
           <button className="m-1 " onClick={toggleRightPane}>
