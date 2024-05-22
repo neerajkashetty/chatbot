@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
 import RightPane from "../components/RightPane";
@@ -117,14 +117,16 @@ const Home = () => {
     ConversationsOfUser();// eslint-disable-next-line
   }, []);
 
-  const createNewChat = () => {
-   setChatLog([])
+  const createNewChat = useCallback(() => {
+    if(chatLog.length != 0){
+    setChatLog([])
+    }
    setSearchTerm(null)
    setIsLoading(false)
    console.log('cloick')
 
     
-  };
+  },[chatLog]);
 
   
 
