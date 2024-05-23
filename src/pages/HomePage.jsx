@@ -118,7 +118,7 @@ const Home = () => {
   }, []);
 
   const createNewChat = useCallback(() => {
-    if(chatLog.length != 0){
+    if(chatLog.length !== 0){
     setChatLog([])
     }
    setSearchTerm(null)
