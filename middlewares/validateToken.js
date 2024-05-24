@@ -13,7 +13,7 @@ async function validateToken(req, res, next) {
     return res.json({ success: false, message: "Access denied, no jwt" });
   }
 
-  JWT.verify(parse, "hello", { algorithms: "HS256" }, async (err, token) => {
+  JWT.verify(parse, privateKey, { algorithms: "RS256" }, async (err, token) => {
     if (err) {
       console.log("JWT Verification error:", err);
       return res.status(401).json({ success: false, message: "Invalid Token" });

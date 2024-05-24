@@ -36,28 +36,28 @@ const signUp = async (req, res) => {
     const privateKey = fs.readFileSync("./jwtRS256.key", "utf-8");
 
     const saltRounds = await bcrypt.genSalt(10);
-    //const hashedPassword = await bcrypt.hash(password, saltRounds)
-    //console.log("hvjhjhjh",hashedPassword)
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
     const data = {
       firstName,
       lastName,
       username: username,
       email,
-      password,
+      password: hashedPassword,
       isNewUser: true,
     };
 
     const usertable = await User.create(data);
+    console.log(usertable);
 
     if (usertable) {
-      let token = JWT.sign({ id: user.id }, "hello", {
+      let token = JWT.sign({ id: usertable.id }, privateKey, {
         expiresIn: "1hr",
-        algorithm: "HS256",
+        algorithm: "RS256",
       });
 
       res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
 
-      //send users details
       return res.json({
         sucess: true,
         data: {
@@ -79,7 +79,6 @@ const Login = async (req, res) => {
   try {
     const { email, password } = req.body;
     //const privateKey = fs.readfileSync("./private.key", "utf8");
-    // console.log("entered", req.body)
     const user = await User.findOne({
       attributes: [
         "id",
@@ -102,9 +101,11 @@ const Login = async (req, res) => {
     }
 
     const encrypted = user.password;
-    // const isSame = await bcrypt.compare(password, encrypted)
+    const isSame = await bcrypt.compare(password, encrypted);
 
-    if (password !== encrypted) {
+    console.log(password);
+
+    if (!isSame) {
       return res
         .status(401)
         .json({ sucess: false, message: "Incorrect Password" });
@@ -115,9 +116,9 @@ const Login = async (req, res) => {
     if (user.isNewUser === undefined) {
       await user.update({ isNewUser: null });
 
-      let token = JWT.sign({ id: user.id }, "hello", {
+      let token = JWT.sign({ id: user.id }, privateKey, {
         expiresIn: "1hr",
-        algorithm: "HS256",
+        algorithm: "RS256",
       });
 
       return res.json({
