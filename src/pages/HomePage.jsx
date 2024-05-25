@@ -131,7 +131,7 @@ const Home = () => {
   
 
   return (
-    <div className={`${enabled ? 'bg-zinc-800' : 'bg-blue-200'} relative h-screen w-full  flex overflow-x-hidden overflow-y-hidden`}>
+    <div className={`${enabled ? 'bg-zinc-800' : 'bg-white text-black'} relative h-screen w-full  flex overflow-x-hidden overflow-y-hidden`}>
       <MiddlePane
         chatLog={chatLog}
         enabled={enabled}

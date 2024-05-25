@@ -5,13 +5,11 @@ import {useForm} from "react-hook-form"
 
 
 const RegisterPage = () => {
-
   const {
     register,
     handleSubmit,
   } = useForm();
 
- // const [products , setProducts] = useState([]);
   const navigate = useNavigate()
 
   const onSubmit = useCallback(async (data) => {
@@ -21,8 +19,6 @@ const RegisterPage = () => {
         email: data.email,
         password: data.password,
       });
-
-//      console.log(response.data);
 
       if (response.status === 200) {
         navigate('/login');
@@ -34,10 +30,6 @@ const RegisterPage = () => {
       console.error("Error submitting registration:", error);
     }
   }, [navigate]);
-
-// useEffect(()=>{
-//   onSubmit();
-// }, [onSubmit]);
 
   
   return(

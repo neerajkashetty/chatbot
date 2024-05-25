@@ -16,6 +16,7 @@ const MiddlePane = ({
   handleSend,
   handleChange,
   sources,
+  enabled
 }) => {
   const chatContainerRef = useRef(null);
   const [showFeedback, setShowFeedback] = useState(false);
@@ -54,21 +55,21 @@ const MiddlePane = ({
       {chatLog.length === 0 && (
         <div className="relative top-1/4 flex flex-col h-screen items-center">
           <div className="flex ">
-            <p className="text-white basis-1/3 top-1/3  relative text-lg font-bold p-3">
+            <p className={`${enabled ? 'bg-zinc-800 text-white' : 'bg-white'} text-black basis-1/3 top-1/3  relative text-lg font-bold p-3`}>
              <TypingAnimation text= "Hoow Can I help you Today ?"/>
             </p>
-            <div className="bg-zinc-800 ">
+            <div className={`${enabled ? 'bg-zinc-800' : 'bg-white'}`} >
               <Lottie animationData={Robot} loop={true} className="w-60" />
             </div>
           </div>
           <div className="grid sm:grid-cols-2 gap-4 top-[8rem] relative h-[10rem] lg:h-2/5 overflow-hidden items-center rounded-lg">
             {customprompt.map((custom) => (
-              <div className="flex border-gray-300 group hover:bg-zinc-700 hover:text-zinc-300 overflow-invisible border sm:h-4/5 rounded-lg opacity-1">
+              <div className="flex border-gray-300 group hover:bg-zinc-700 hover:text-zinc-300 overflow-invisible text-white border sm:h-4/5 rounded-lg opacity-1">
                 <button
                   className="basis-full p-2 h-16 flex flex-col"
                   onClick={() => handleSend(custom.title)}
                 >
-                  <p className="text-white ml-2  font-bold text-sm ">
+                  <p className={`${enabled ? 'bg-zinc-800' : 'bg-white text-black '} ml-2 font-bold text-sm `}>
                     {custom.title}
                   </p>
                   <p className="text-gray-500 text-sm font-bold">
@@ -102,12 +103,12 @@ const MiddlePane = ({
         ref={chatContainerRef}
       >
         {chatLog.map((message, index) => (
-          <div className="flex flex-col">
+          <div className="flex flex-col ">
             <div
               key={index}
               className={` ${
                 message.type === "user"
-                  ? "text-sm flex"
+                  ? "text-sm flex text-black"
                   : "bg-white/[.05] rounded-md"
               } chat m-4  max-w-max items-start`}
             >

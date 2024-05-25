@@ -6,9 +6,10 @@ import { useRecoilState } from "recoil";
 import { usernameState } from "../atoms/user";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-const LoginPage = () => {
-  const { register, handleSubmit } = useForm();
 
+const LoginPage = () => {
+  
+  const { register, handleSubmit } = useForm();
   const [username, setUserName] = useRecoilState(usernameState);
 
   const onSubmit = useCallback(

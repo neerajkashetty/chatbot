@@ -25,5 +25,5 @@ yarn-error.log*
 #Large Language model
 /LLM
 
-.env
+. env
 jwtRS256.key
