@@ -3,10 +3,7 @@ const JWT = require("jsonwebtoken");
 const db = require("../sequelize/models");
 const User = db.User;
 const fs = require("fs");
-const {
-  generateFromEmail,
-  generateUsername,
-} = require("unique-username-generator");
+const { generateFromEmail } = require("unique-username-generator");
 
 const signUp = async (req, res) => {
   try {
@@ -15,15 +12,6 @@ const signUp = async (req, res) => {
     const username = generateFromEmail(email, 4);
 
     const user = await User.findOne({
-      attributes: [
-        "id",
-        "username",
-        "password",
-        "email",
-        "firstName",
-        "lastName",
-        "isNewUser",
-      ],
       where: {
         email: email,
       },
@@ -44,7 +32,6 @@ const signUp = async (req, res) => {
       username: username,
       email,
       password: hashedPassword,
-      isNewUser: true,
     };
 
     const usertable = await User.create(data);
@@ -78,17 +65,7 @@ const signUp = async (req, res) => {
 const Login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    //const privateKey = fs.readfileSync("./private.key", "utf8");
     const user = await User.findOne({
-      attributes: [
-        "id",
-        "username",
-        "password",
-        "email",
-        "firstName",
-        "lastName",
-        "isNewUser",
-      ],
       where: {
         email: email,
       },
@@ -113,38 +90,18 @@ const Login = async (req, res) => {
 
     const privateKey = fs.readFileSync("./jwtRS256.key", "utf-8");
 
-    if (user.isNewUser === undefined) {
-      await user.update({ isNewUser: null });
+    let token = JWT.sign({ id: user.id }, privateKey, {
+      expiresIn: "1hr",
+      algorithm: "RS256",
+    });
 
-      let token = JWT.sign({ id: user.id }, privateKey, {
-        expiresIn: "1hr",
-        algorithm: "RS256",
-      });
-
-      return res.json({
-        sucess: true,
-        data: {
-          username: user.username,
-          authtoken: token,
-          firstLogin: true,
-        },
-      });
-    } else {
-      let token = JWT.sign({ id: user.id }, "hello", {
-        expiresIn: "1hr",
-        algorithm: "HS256",
-      });
-      res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
-      // console.log("user", JSON.stringify(verify, null, 2));
-      //  console.log(token);
-      return res.json({
-        sucess: true,
-        data: {
-          username: user.username,
-          authtoken: token,
-        },
-      });
-    }
+    return res.json({
+      sucess: true,
+      data: {
+        username: user.username,
+        authtoken: token,
+      },
+    });
   } catch (error) {
     res.status(500).send("Error" + error.message);
   }

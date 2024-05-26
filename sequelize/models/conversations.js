@@ -1,27 +1,49 @@
 "use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class Conversations extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // define association here
-      Conversations.belongsTo(models.User);
+      Conversations.belongsTo(models.User, {
+        foreignKey: "userId",
+        as: "user",
+      });
     }
   }
+
   Conversations.init(
     {
-      userInput: DataTypes.TEXT,
-      botResponse: DataTypes.TEXT,
-      userId: DataTypes.INTEGER,
+      conversationId: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        allowNull: false,
+      },
+      userMessages: {
+        type: DataTypes.ARRAY(DataTypes.TEXT),
+        allowNull: false,
+        defaultValue: [],
+      },
+      botMessages: {
+        type: DataTypes.ARRAY(DataTypes.TEXT),
+        allowNull: false,
+        defaultValue: [],
+      },
+      userId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        references: {
+          model: "users",
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
+      },
     },
     {
       sequelize,
       modelName: "Conversations",
     }
   );
+
   return Conversations;
 };

@@ -1,19 +1,27 @@
 "use strict";
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Conversations", {
+  up: async (queryInterface, Sequelize) => {
+    await queryInterface.createTable("conversations", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      userInput: {
-        type: Sequelize.TEXT,
+      conversationId: {
+        type: Sequelize.UUID,
+        defaultValue: Sequelize.UUIDV4,
+        allowNull: false,
       },
-      botResponse: {
-        type: Sequelize.TEXT,
+      userMessages: {
+        type: Sequelize.ARRAY(Sequelize.TEXT),
+        allowNull: false,
+        defaultValue: [],
+      },
+      botMessages: {
+        type: Sequelize.ARRAY(Sequelize.TEXT),
+        allowNull: false,
+        defaultValue: [],
       },
       userId: {
         type: Sequelize.INTEGER,
@@ -22,18 +30,22 @@ module.exports = {
           model: "users",
           key: "id",
         },
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
       },
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE,
+        defaultValue: Sequelize.NOW,
       },
     });
   },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Conversations");
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable("conversations");
   },
 };
