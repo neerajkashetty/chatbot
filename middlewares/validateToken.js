@@ -21,6 +21,8 @@ async function validateToken(req, res, next) {
     req.id = token;
     return res.status(200).json({ success: true, message: "Token is valid" });
   });
+
+  next();
 }
 
 module.exports = validateToken;

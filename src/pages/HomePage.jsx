@@ -76,45 +76,38 @@ const Home = () => {
   };
 
 
-  const ConversationsOfUser = async () =>{
+  const ConversationsOfUser = async (userId, conversationId) => {
     const combinedChatLog = [];
-
-    const response = await axios.post("http://localhost:3002/api/conversations", {
-      userId: 24,
-    })
-
-    console.log(response)
-    const conversations = response.data.data;
-
-    if(conversations){
-    
-    conversations.forEach((conversation) => {
-
-      combinedChatLog.push({
-        type: "user",
-        message: conversation.userInput,
-        id: conversation.id,
+  
+    try {
+      const response = await axios.post("http://localhost:3002/api/conversations", {
+        userId,
+        conversationId,
       });
-    
-      combinedChatLog.push({
-        type: "chatbot",
-        message: conversation.botResponse,
-        id: conversation.id,
-      });
-    });
-    
-    setChatLog((prevChatLog) => [
-      ...prevChatLog,
-     //...combinedChatLog,
-    ]);
-    console.log(chatLog)
-  }else{
-    console.log("New user")
-  }
-  }
-
+  
+      const conversations = response.data.data;
+  
+      if (conversations) {
+        conversations.userMessages.forEach((userMessage, index) => {
+          combinedChatLog.push({ type: "user", message: userMessage });
+          if (conversations.botMessages[index]) {
+            combinedChatLog.push({ type: "bot", message: conversations.botMessages[index] });
+          }
+        });
+  
+        setChatLog((prevChatLog) => [...prevChatLog, ...combinedChatLog]);
+      } else {
+        console.log("New user");
+      }
+    } catch (error) {
+      console.log("Error fetching conversations:", error);
+    }
+  };
+  
   useEffect(() => {
-    ConversationsOfUser();// eslint-disable-next-line
+    const userId = 24; // Replace with actual userId
+    const conversationId = 'some-conversation-id'; // Replace with actual conversationId
+    ConversationsOfUser(userId, conversationId); // eslint-disable-next-line
   }, []);
 
   const createNewChat = useCallback(() => {
