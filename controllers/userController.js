@@ -29,7 +29,7 @@ const signUp = async (req, res) => {
     const data = {
       firstName,
       lastName,
-      username: username,
+      username: username, //commit
       email,
       password: hashedPassword,
     };
