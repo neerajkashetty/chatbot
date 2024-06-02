@@ -202,11 +202,11 @@ const MiddlePane = ({
       </div>
         <div className="flex w-full justify-center">
       <div className="relative flex justify-end w-4/5 ">
-        <div className="p-2 lg:mb-2 mb-1  grow basis bg-white/[.05] flex items-center rounded-md shadow-md">
+        <div className= {`${enabled ? 'bg-transparent' : 'bg-white text-blue-900'} p-2 lg:mb-2 mb-1  grow basis bg-white/[.05] flex items-center rounded-md shadow-lg`}>
           <input
             type="text"
             placeholder="Send your message"
-            className="focus:outline-none outline-none basis-full p-3 flex items-center text-white bg-transparent border-none"
+            className={`${enabled ? 'bg-transparent' : 'bg-white text-blue-900'} focus:outline-none outline-none basis-full p-3 flex items-center text-white`}
             value={searchTerm}
             onChange={handleChange}
             onKeyDown={(e) => {
