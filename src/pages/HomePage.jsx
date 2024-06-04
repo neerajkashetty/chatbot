@@ -64,7 +64,16 @@ const Home = () => {
     const response = await axios.post("http://localhost:3002/api/ai", {
       userInput: messageToSend,
     });
-    console.log(response.data.sources)
+
+    const botMessages = response.data.response
+    const conversation = await axios.post("http://localhost:3002/api/conversations/new", {
+      userId: "1",
+      userInput: messageToSend,
+      botMessages: botMessages,
+      conversationId: "ka9081293821"
+    })
+
+    console.log(conversation)
    const sources =  getSources(response.data.sources);
     setSources(sources)
     setChatLog((prevChatLog) => [

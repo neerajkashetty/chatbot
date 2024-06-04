@@ -39,12 +39,13 @@ const getConversation = async (req, res) => {
 
 const createConversation = async (req, res) => {
   try {
-    const { userId, userMessage, botMessage } = req.body;
+    const { userId, userMessage, botMessage, conversationId } = req.body;
 
     const newConversation = await Conversations.create({
       userId,
       userMessages: [userMessage],
       botMessages: [botMessage],
+      conversationId: conversationId,
     });
 
     return res.status(201).json({
