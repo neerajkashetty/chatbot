@@ -23,7 +23,7 @@ root.render(
         <Route path="/login" element={<LoginPage />} />
 
         <Route
-          path="/home"
+          path="/home/:conversationId?"
           element={
             <ProtectedRoute>
               <Home />
