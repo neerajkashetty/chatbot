@@ -64,16 +64,19 @@ const Home = () => {
     const response = await axios.post("http://localhost:3002/api/ai", {
       userInput: messageToSend,
     });
+    console.log(messageToSend)
 
     const botMessages = response.data.response
-    const conversation = await axios.post("http://localhost:3002/api/conversations/new", {
+console.log(botMessages)
+   
+    const conversation = await axios.post("http://localhost:3002/api/conversations-new", {
       userId: "1",
-      userInput: messageToSend,
-      botMessages: botMessages,
-      conversationId: "ka9081293821"
+      userMessage: messageToSend,
+      botMessage: botMessages,
+      conversationId: "550e8400-e29b-41d4-a716-446655420000"
     })
-
     console.log(conversation)
+    
    const sources =  getSources(response.data.sources);
     setSources(sources)
     setChatLog((prevChatLog) => [
@@ -114,8 +117,8 @@ const Home = () => {
   };
   
   useEffect(() => {
-    const userId = 24; // Replace with actual userId
-    const conversationId = 'some-conversation-id'; // Replace with actual conversationId
+    const userId = 1;
+    const conversationId = '550e8400-e29b-41d4-a716-446655440000'; 
     ConversationsOfUser(userId, conversationId); // eslint-disable-next-line
   }, []);
 

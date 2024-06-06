@@ -25,7 +25,9 @@ app.use("/api/ai", docLoader);
 
 app.use("/api/addDocs", addDocumentsToPinecone);
 
-app.use("/api/conversations", getConversation);
+app.use("/api/conversations/", getConversation);
+
+app.use("/api/conversations-new", createConversation);
 
 const verify = require("../routes/verifyRoute");
 app.use("/api/user", verify);
