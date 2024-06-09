@@ -19,7 +19,6 @@ const Home = () => {
   const [conversationId, setConversationId] = useState(paramConversationId);
   const [sources, setSources] = useState([]);
   const [chats, setChats] = useState([]);
-  const enabled = useRecoilValue(theme);
 
   const toggleRightPane = () => {
     setIsRightPaneVisible(!isRightPaneVisible);
@@ -138,10 +137,9 @@ const Home = () => {
   }, [chatLog, navigate]);
 
   return (
-    <div className={`${enabled ? 'bg-zinc-800' : 'bg-white text-black'} relative h-screen w-full flex overflow-x-hidden overflow-y-hidden`}>
+    <div className="dark:bg-zinc-800 bg-white text-black relative h-screen w-full flex overflow-x-hidden overflow-y-hidden">
       <MiddlePane
         chatLog={chatLog}
-        enabled={enabled}
         searchTerm={searchTerm}
         isLoading={isLoading}
         handleSend={handleSend}

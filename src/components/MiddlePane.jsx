@@ -16,7 +16,6 @@ const MiddlePane = ({
   handleSend,
   handleChange,
   sources,
-  enabled
 }) => {
   const chatContainerRef = useRef(null);
   const [showFeedback, setShowFeedback] = useState(false);

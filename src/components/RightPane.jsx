@@ -158,7 +158,7 @@ const RightPane = ({chats}) => {
       <Switch
         checked={enabled}
         onChange={setEnabled}
-        className="dark:bg-black bg-blue-900 relative inline-flex shadow-md shadow-zinc-700 rounded-lg mt-8 border-1 border-gray-300 h-5 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white/75" >
+        className="dark:bg-black bg-gray-900 relative inline-flex shadow-md shadow-zinc-700 rounded-lg mt-8 border-1 border-gray-300 h-5 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white/75" >
         <span
           aria-hidden="true"
           className={`${enabled ? 'translate-x-7' : 'translate-x-0'}
