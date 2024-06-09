@@ -55,10 +55,10 @@ const MiddlePane = ({
       {chatLog.length === 0 && (
         <div className="relative top-1/4 flex flex-col h-screen items-center">
           <div className="flex ">
-            <p className={`${enabled ? 'bg-zinc-800 text-white' : 'bg-white'} text-black basis-1/3 top-1/3  relative text-lg font-bold p-3`}>
+            <p className = 'dark:text-white text-black text-black basis-1/3 top-1/3  relative text-lg font-bold p-3'>
              <TypingAnimation text= "Hoow Can I help you Today ?"/>
             </p>
-            <div className={`${enabled ? 'bg-zinc-800' : 'bg-white'}`} >
+            <div className="dark:bg-zinc-800" >
               <Lottie animationData={Robot} loop={true} className="w-60" />
             </div>
           </div>
@@ -69,7 +69,7 @@ const MiddlePane = ({
                   className="basis-full p-2 h-16 flex flex-col"
                   onClick={() => handleSend(custom.title)}
                 >
-                  <p className={`${enabled ? 'bg-zinc-800' : 'bg-white text-black '} ml-2 font-bold text-sm `}>
+                  <p className="dark:bg-zinc-800 dark:text-white text-black  ml-2 font-bold text-sm ">
                     {custom.title}
                   </p>
                   <p className="text-gray-500 text-sm font-bold">
@@ -109,16 +109,16 @@ const MiddlePane = ({
               className={` ${
                 message.type === "user"
                   ? "text-sm flex text-black"
-                  : "bg-white/[.05] rounded-md"
+                  : "dark:bg-white/[.05] bg-gray-300 shadow-md  rounded-md"
               } chat m-4  max-w-max items-start`}
             >
               <img
-                className="chatImg  object-cover w-10 m-4 rounded-md"
+                className="chatImg object-cover w-10 m-4 rounded-md"
                 src={message.type === "user" ? userIcon : "hidden"}
                 alt=""
               />
               <div className="flex flex-col">
-                <div className="text text-gray-300 text-sm p-4 markdown">
+                <div className="text-black dark:text-gray-300 text-sm p-4 markdown">
                   <ReactMarkdown children={message.message} />
                 </div>
                 {message.type !== "user" && (
@@ -128,8 +128,8 @@ const MiddlePane = ({
                       onClick={() => setShowFeedback(true)}
                     >
                       <img
-                        src={Thumsup}
-                        className="text-blue-500"
+                        src={Thumsup} 
+                        className="text-blue-500 "
                         height={14}
                         width={14}
                         alt=""
@@ -150,7 +150,7 @@ const MiddlePane = ({
             </div>
             {message.type === "user" && !isLoading && (
               <div>
-                <div className="text-white font-bold text-md flex m-4 ">
+                <div className="dark:text-white text-black font-bold text-md flex m-4 ">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -170,12 +170,12 @@ const MiddlePane = ({
                 </div>
                 <div className="grid grid-cols-2 w-2/3">
                   {sources.map((source) => (
-                    <div className="ml-6 p-2 rounded-lg shadow-md  overflow-hidden shadow-gray-600 border-1 border-gray-300 hover:bg-zinc-700 bg-zinc-800">
-                      <p className="text-gray-300 font-bold text-start text-sm">
+                    <div className="ml-6 p-2 rounded-lg shadow-md  overflow-hidden shadow-gray-600 border-1 border-gray-300 hover:bg-zinc-700 bg-gray-100 dark:bg-zinc-800">
+                      <p className="dark:text-gray-300 text-black font-bold text-start text-sm">
                         Relevant Links
                       </p>
                       <a
-                        className="text-white text-xs flex"
+                        className="dark:text-white text-gray-800 text-xs flex"
                         href={source}
                         target={sources}
                       >
@@ -193,7 +193,7 @@ const MiddlePane = ({
           <div
             key={chatLog.length}
             className={
-              "bg-white/[.05] rounded-lg m-4 w-full py-8 px-12 text-sm flex items-start text-white text-justify"
+              "dark:bg-white/[.05]  bg-gray-400 rounded-lg m-4 w-full py-8 px-12 text-sm flex items-start text-white text-justify"
             }
           >
             <LoadingAnimation />
@@ -202,11 +202,11 @@ const MiddlePane = ({
       </div>
         <div className="flex w-full justify-center">
       <div className="relative flex justify-end w-4/5 ">
-        <div className= {`${enabled ? 'bg-transparent' : 'bg-white text-blue-900'} p-2 lg:mb-2 mb-1  grow basis bg-white/[.05] flex items-center rounded-md shadow-lg`}>
+        <div className="bg-gray-100 p-2 lg:mb-2 mb-1 grow basis dark:bg-white/[.05] flex items-center rounded-md shadow-lg">
           <input
             type="text"
             placeholder="Send your message"
-            className={`${enabled ? 'bg-transparent' : 'bg-white text-blue-900'} focus:outline-none outline-none basis-full p-3 flex items-center text-white`}
+            className="dark:bg-transparent bg-gray-100 text-blue-900  focus:outline-none outline-none basis-full p-3 flex items-center dark:text-white"
             value={searchTerm}
             onChange={handleChange}
             onKeyDown={(e) => {

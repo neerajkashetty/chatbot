@@ -194,11 +194,11 @@ const Home = () => {
         </div>
       </div>
       <div
-        className={`lg:absolute lg:right-0 lg:top-0 lg:flex lg:flex-col h-screen lg:p-8 lg:border-1 lg:bg-zinc-900 transition-transform duration-400 ease-in-out
+        className={`lg:absolute lg:right-0 lg:top-0 lg:flex lg:flex-col h-screen lg:p-8 border-2 dark:border-1 dark:border-gray-600 dark:bg-zinc-900 transition-transform duration-400 ease-in-out
         ${
           isRightPaneVisible
-            ? "absolute right-0 top-0 flex flex-col h-screen p-8 border-1 bg-zinc-900 transition-all delay-300 duration-500 translate-x-1"
-            : "absolute right-0 top-0 flex flex-col h-screen p-8 border-1 bg-zinc-900 lg:translate-x-1 lg:relative transition-all delay-300 duration-500 translate-x-full"
+            ? "absolute right-0 top-0 flex flex-col h-screen p-8 border-1 dark:bg-zinc-900 bg-white transition-all delay-300 duration-500 translate-x-1"
+            : "absolute right-0 top-0 flex flex-col h-screen p-8 border-1 dark:bg-zinc-900 bg-white lg:translate-x-1 lg:relative transition-all delay-300 duration-500 translate-x-full"
         }`}
       >
         <RightPane 

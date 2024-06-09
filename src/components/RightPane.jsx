@@ -1,5 +1,5 @@
 import { Menu, Switch } from "@headlessui/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usernameState, theme} from "../atoms/user";
 import { useRecoilState } from "recoil";
 
@@ -10,7 +10,16 @@ const RightPane = ({chats}) => {
   const [username, setUserName] = useRecoilState(usernameState);
   const [enabled, setEnabled]  = useRecoilState(theme);
 
-  console.log(enabled)
+
+
+  useEffect (()=> {
+    const root = window.document.documentElement;
+    if(enabled){
+      root.classList.add('dark');
+    }else{
+      root.classList.remove('dark');
+    }
+  },[enabled])
 
   const onLogOut = () => {
     localStorage.clear();
@@ -46,16 +55,16 @@ const RightPane = ({chats}) => {
     );
     setUploadedFiles(updatedFiles);
   };
-console.log(enabled)
+
   return (
     <div className="flex flex-col items-center lg:relative">
       <Menu
         as="div"
-        className="bg-zinc-900/100 shadow rounded-lg flex  basis-6 border-gray-300 shadow-zinc-700/100 hover:cursor-pointer"
+        className="dark:bg-zinc-900/100 bg-gray-400 shadow rounded-lg flex  basis-6 border-gray-300 shadow-zinc-700/100 hover:cursor-pointer"
       >
         <div className="bg-zinc-700 shadow-md h-8 m-1 w-8 flex items-center justify-center rounded-3xl text-white text-center font-bold">N</div>
         <div>
-          <Menu.Button className="flex font-bold  text-gray-300  text-sm text-left w-full p-2">
+          <Menu.Button className="flex font-bold  dark:text-gray-300  text-black text-sm text-left w-full p-2">
             {" "}
            <p >{username.user}</p> 
           </Menu.Button>
@@ -149,9 +158,7 @@ console.log(enabled)
       <Switch
         checked={enabled}
         onChange={setEnabled}
-        className={`${enabled ? 'bg-gray-900' : 'bg-blue-300'}
-          relative inline-flex shadow-md shadow-zinc-700 rounded-lg mt-8 border-1 border-gray-300 h-5 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white/75`}
-      >
+        className="dark:bg-black bg-blue-900 relative inline-flex shadow-md shadow-zinc-700 rounded-lg mt-8 border-1 border-gray-300 h-5 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white/75" >
         <span
           aria-hidden="true"
           className={`${enabled ? 'translate-x-7' : 'translate-x-0'}
@@ -160,29 +167,29 @@ console.log(enabled)
       </Switch>
       </div>
 
-      <div className="w-full basis-96 m-4 bg-zinc-800 rounded-md shadow-md h-max overflow-hidden scroll-smooth shadow-zinc-700 border-1 border-gray-300">
-        <div className="text-gray-300 text-lg font-bold">Chats</div>
+      <div className="w-full basis-96 m-4 dark:bg-zinc-800 bg-gray-200 rounded-md shadow-md h-max overflow-hidden scroll-smooth shadow-zinc-700 border-1 border-gray-300">
+        <div className="dark:text-gray-300 text-black text-lg font-bold">Chats</div>
         <div className="w-full h-full overflow-y-scroll scroll-m-0 text-start">
-      <div className="text-sm p-1 text-gray-400 font-semibold">Today</div>
+      <div className="text-sm p-1 text-black dark:text-gray-400 font-semibold">Today</div>
       {
         chats.map((chat, index)=> (
-          <button key={index === 0} className="hover:bg-zinc-700 scroll-smooth text-gray-200 text-start flex flex-col w-full max-w-full rounded-lg text-sm p-2"> {chat}</button>
+          <button key={index === 0} className="dark:hover:bg-zinc-700 hover:bg-gray-400 scroll-smooth dark:text-gray-200 text-black text-start flex flex-col w-full max-w-full rounded-lg text-sm p-2"> {chat}</button>
         ))
       }
-      <div className="text-sm p-1 text-gray-400 font-semibold" >Yesterday</div>
+      <div className="text-sm p-1 dark:text-gray-400 text-black font-semibold" >Yesterday</div>
       {
         Previouschats.map((chat, index)=> (
-          <button key={index} className="hover:bg-zinc-700 scroll-smooth text-gray-200 flex w-full text-start rounded-lg text-sm p-2"> {chat}</button>
+          <button key={index} className="dark:hover:bg-zinc-700 hover:bg-gray-400 scroll-smooth dark:text-gray-200 text-black flex w-full text-start rounded-lg text-sm p-2"> {chat}</button>
         ))
       }
       </div>
       </div>
 
       <div className="flex flex-col basis-36 ">
-        <h2 className="text-lg font-semibold p-2 text-center text-gray-400">
+        <h2 className="text-lg font-semibold p-2 text-center text-black dark:text-gray-400">
           Knowledge Base
         </h2>
-        <div className="rounded-md flex flex-col items-center justify-center w-56 bg-zinc-800 border-1 shadow-md shadow-zinc-700 h-4/5">
+        <div className="rounded-md flex flex-col items-center justify-center w-56 bg-gray-200 dark:bg-zinc-800 border-1 shadow-md shadow-zinc-700 h-4/5">
         <div>
           <label htmlFor="fileInput" className="cursor-pointer flex items-center justify-center ">
             <div className="p-4 rounded-md border-2  border-blue-300 h-1/12 border-dotted outline-4">
@@ -193,7 +200,7 @@ console.log(enabled)
                   viewBox="0 0 24 24"
                   strokeWidth="1.5"
                   stroke="currentColor"
-                  className="w-4 h-4 text-white font-bold"
+                  className="w-4 h-4 dark:text-white font-bold"
                 >
                   <path
                     strokeLinecap="round"

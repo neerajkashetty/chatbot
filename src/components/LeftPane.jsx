@@ -5,7 +5,7 @@ const LeftPane = ({ createNewChat, isRightPaneVisible }) => {
   return (
     <>
     {!isRightPaneVisible && (
-    <button className=" absolute border-1 m-4  shadow-md shadow-zinc-700/100 rounded-lg border-gray-300 group bg-zinc-800 opacity-96 flex hover:cursor-pointer active:translate-y-1" onClick={createNewChat} >
+    <button className=" absolute border-1 m-4  shadow-md shadow-zinc-700/100 rounded-lg border-gray-300 group dark:bg-zinc-800 bg-gray-400 opacity-96 flex hover:cursor-pointer active:translate-y-1" onClick={createNewChat} >
       <div className="hidden md:block"> <p className="m-3 text-white text-xs text-center font-bold ">New Chat</p>
 </div>
       <div className="flex items-center hover:text-white m-2">
