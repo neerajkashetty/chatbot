@@ -2,6 +2,7 @@ import { Menu, Switch } from "@headlessui/react";
 import { useState, useEffect } from "react";
 import { usernameState, theme} from "../atoms/user";
 import { useRecoilState } from "recoil";
+import axios from 'axios'
 
 const RightPane = ({chats}) => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -11,7 +12,6 @@ const RightPane = ({chats}) => {
   const [enabled, setEnabled]  = useRecoilState(theme);
 
 
-
   useEffect (()=> {
     const root = window.document.documentElement;
     if(enabled){
@@ -19,6 +19,7 @@ const RightPane = ({chats}) => {
     }else{
       root.classList.remove('dark');
     }
+    pullConversations();
   },[enabled])
 
   const onLogOut = () => {
@@ -26,6 +27,19 @@ const RightPane = ({chats}) => {
     window.location = "/Login";
     setUserName("");
   };
+
+  const pullConversations = async () => {
+
+    const chats = await axios.get('http://localhost:3002/api/conversation/conversations-list', {
+      params:{
+        userId: 1
+      }
+    })
+
+    const conversation = chats.data
+  }
+
+
 
   const handleFileInputChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -57,10 +71,11 @@ const RightPane = ({chats}) => {
   };
 
   return (
+    
     <div className="flex flex-col items-center lg:relative">
       <Menu
         as="div"
-        className="dark:bg-zinc-900/100 bg-gray-400 shadow rounded-lg flex  basis-6 border-gray-300 shadow-zinc-700/100 hover:cursor-pointer"
+        className="dark:bg-zinc-900/100 bg-gray-400 z-50 shadow rounded-lg flex  basis-6 border-gray-300 shadow-zinc-700/100 hover:cursor-pointer"
       >
         <div className="bg-zinc-700 shadow-md h-8 m-1 w-8 flex items-center justify-center rounded-3xl text-white text-center font-bold">N</div>
         <div>

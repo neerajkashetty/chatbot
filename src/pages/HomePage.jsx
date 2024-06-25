@@ -3,8 +3,6 @@ import axios from "axios";
 import RightPane from "../components/RightPane";
 import LeftPane from "../components/LeftPane";
 import MiddlePane from "../components/MiddlePane";
-import { useRecoilValue } from "recoil";
-import { theme } from "../atoms/user";
 import { v4 as uuid } from 'uuid';
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -66,7 +64,7 @@ const Home = () => {
 
     const botMessages = response.data.response;
 
-    const conversation = await axios.post("http://localhost:3002/api/conversations-new", {
+    const conversation = await axios.post("http://localhost:3002/api/conversation/conversations-new", {
       userId: "1",
       userMessage: messageToSend,
       botMessage: botMessages,
@@ -88,7 +86,7 @@ const Home = () => {
     const combinedChatLog = [];
 
     try {
-      const response = await axios.post("http://localhost:3002/api/conversations", {
+      const response = await axios.post("http://localhost:3002/api/conversation/conversations", {
         userId,
         conversationId,
       });

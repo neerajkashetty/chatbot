@@ -84,7 +84,43 @@ const createConversation = async (req, res) => {
   }
 };
 
+const listConversationHeadings = async (req, res) => {
+  try {
+    const { userId } = req.query;
+    const conversations = await Conversations.findAll({
+      where: {
+        userId,
+      },
+    });
+
+    if (conversations) {
+      const conversationData = conversations.map((convo) => ({
+        conversationId: convo.conversationId,
+        userMessage: convo.userMessages,
+      }));
+
+      return res.json({
+        sucess: true,
+        data: {
+          conversationData,
+        },
+      });
+    } else {
+      return res.json({
+        sucess: true,
+        message: "No Conversations Found",
+      });
+    }
+  } catch (error) {
+    console.error("Error Fetching the conversations", error);
+    return res.json({
+      success: false,
+      message: error,
+    });
+  }
+};
 module.exports = {
   getConversation,
   createConversation,
+  listConversationHeadings,
 };

@@ -25,7 +25,10 @@ app.use("/api/ai", docLoader);
 
 app.use("/api/addDocs", addDocumentsToPinecone);
 
-app.use("/api/conversations/", getConversation);
+const conversation = require("../routes/conversation");
+app.use("/api/conversation/", conversation);
+
+app.use("/api/conversation/", getConversation);
 
 app.use("/api/conversations-new", createConversation);
 
