@@ -61,7 +61,7 @@ const MiddlePane = ({
               <Lottie animationData={Robot} loop={true} className="w-60" />
             </div>
           </div>
-          <div className="grid sm:grid-cols-2 gap-4 top-[8rem] relative h-[10rem] lg:h-2/5 overflow-hidden items-center rounded-lg">
+          <div className="grid sm:grid-cols-2 gap-4 top-[7.5rem] relative h-[10rem] lg:h-2/5 overflow-hidden items-center rounded-lg">
             {customprompt.map((custom) => (
               <div className="flex border-gray-300 group hover:bg-zinc-700 hover:text-zinc-300 overflow-invisible text-white border sm:h-4/5 rounded-lg opacity-1">
                 <button
@@ -123,12 +123,12 @@ const MiddlePane = ({
                 {message.type !== "user" && (
                   <div className="flex items-end gap-2 m-2 justify-end">
                     <button
-                      className="hover:-translate-y-1 "
+                      className="hover:-translate-y-1 text-blue-300 "
                       onClick={() => setShowFeedback(true)}
                     >
                       <img
                         src={Thumsup} 
-                        className="text-blue-500 "
+                        className="text-white fill-current"
                         height={14}
                         width={14}
                         alt=""
