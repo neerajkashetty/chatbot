@@ -4,12 +4,14 @@ import { usernameState, theme} from "../atoms/user";
 import { useRecoilState } from "recoil";
 import axios from 'axios'
 
-const RightPane = ({chats}) => {
+const RightPane = ({setConversationId}) => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   
   const Previouschats = ["What is Newtons third law", "Where is the UC main Campus", "What are the facilites availabel"]
   const [username, setUserName] = useRecoilState(usernameState);
   const [enabled, setEnabled]  = useRecoilState(theme);
+  const [chats, setChats] = useState()
+  const [istrue, setIsTrue] = useState(false); 
 
 
   useEffect (()=> {
@@ -28,17 +30,36 @@ const RightPane = ({chats}) => {
     setUserName("");
   };
 
-  const pullConversations = async () => {
-
-    const chats = await axios.get('http://localhost:3002/api/conversation/conversations-list', {
-      params:{
-        userId: 1
+ const pullConversations = async () => {
+    try {
+      const response = await axios.get('http://localhost:3002/api/conversation/conversations-list', {
+        params: {
+          userId: 1
+        }
+      });
+      const conversationData = response.data.data.conversationData;
+      console.log("Fetched conversation data:", conversationData);
+      if (Array.isArray(conversationData)) {
+        const firstMessages = conversationData.map(conversation => {
+          const userMessage = conversation.userMessage;
+          if(Array.isArray(userMessage) && userMessage.length > 0){
+            return{
+              conversationid : conversation.conversationId,
+              firstMessage: userMessage[0]
+            }
+          }
+        })
+        setChats(firstMessages);
+        setIsTrue(true)
+        console.log("Chats state after setting:", conversationData);
+      } else {
+        console.error("Fetched data is not an array:", conversationData);
       }
-    })
-
-    const conversation = chats.data
-  }
-
+    } catch (error) {
+      console.error("Error fetching conversations:", error);
+    }
+  };
+console.log(chats)
 
 
   const handleFileInputChange = (event) => {
@@ -142,7 +163,6 @@ const RightPane = ({chats}) => {
                 </div>
               </Menu.Item>
               <hr className="border-gray-600 my-1 mt-2" />
-
               <Menu.Item>
                 <div className="flex text-gray-300 hover:bg-zinc-700 rounded-lg font-semibold text-sm p-2">
                   <button onClick={onLogOut}>Logout</button>
@@ -187,14 +207,17 @@ const RightPane = ({chats}) => {
         <div className="w-full h-full overflow-y-scroll scroll-m-0 text-start">
       <div className="text-sm p-1 text-black dark:text-gray-400 font-semibold">Today</div>
       {
-        chats.map((chat, index)=> (
-          <button key={index === 0} className="dark:hover:bg-zinc-700 hover:bg-gray-400 scroll-smooth dark:text-gray-200 text-black text-start flex flex-col w-full max-w-full rounded-lg text-sm p-2"> {chat}</button>
-        ))
-      }
+        istrue && (
+            chats.map((chat, index) => (
+              <button onClick={()=> setConversationId(1, chat.conversationid)} key={index} className="dark:hover:bg-zinc-700 hover:bg-gray-400 scroll-smooth dark:text-gray-200 text-black text-start flex flex-col w-full max-w-full rounded-lg text-sm p-2">
+                <p>{chat.firstMessage}</p>
+              </button>
+            ))
+          )}
       <div className="text-sm p-1 dark:text-gray-400 text-black font-semibold" >Yesterday</div>
       {
         Previouschats.map((chat, index)=> (
-          <button key={index} className="dark:hover:bg-zinc-700 hover:bg-gray-400 scroll-smooth dark:text-gray-200 text-black flex w-full text-start rounded-lg text-sm p-2"> {chat}</button>
+          <button key={index} className="dark:hover:bg-zinc-700 hover:bg-gray-400 scroll-smooth dark:text-gray-200 text-black flex w-full text-start rounded-lg text-sm p-2"> {chat.userMessages}</button>
         ))
       }
       </div>

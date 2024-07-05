@@ -133,7 +133,7 @@ const Home = () => {
     setConversationId(newConversationId);
     navigate(`/home/${newConversationId}`);
   }, [chatLog, navigate]);
-
+console.log(conversationId)
   return (
     <div className="dark:bg-zinc-800 bg-white text-black relative h-screen w-full flex overflow-x-hidden overflow-y-hidden">
       <MiddlePane
@@ -199,6 +199,7 @@ const Home = () => {
       >
         <RightPane 
           chats={chats}
+          setConversationId = {ConversationsOfUser}
         />
       </div>
     </div>
