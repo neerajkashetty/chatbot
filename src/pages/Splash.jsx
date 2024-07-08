@@ -1,8 +1,3 @@
-import { createRoot } from "react-dom/client";
-import { Canvas } from "@react-three/fiber";
-import { useRef, useEffect, useState } from "react";
-import { useFrame } from "@react-three/fiber";
-
 
 function Splash() {
   return (
