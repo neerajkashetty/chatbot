@@ -63,12 +63,12 @@ const MiddlePane = ({
           </div>
           <div className="grid sm:grid-cols-2 gap-4 top-[7.5rem] relative h-[10rem] lg:h-2/5 overflow-hidden items-center rounded-lg">
             {customprompt.map((custom) => (
-              <div className="flex border-gray-300 group hover:bg-zinc-700 hover:text-zinc-300 overflow-invisible text-white border sm:h-4/5 rounded-lg opacity-1">
+              <div className="flex border-gray-300 group hover:bg-zinc-700  overflow-invisible text-white border sm:h-4/5 rounded-lg opacity-1">
                 <button
                   className="basis-full p-2 h-16 flex flex-col"
                   onClick={() => handleSend(custom.title)}
                 >
-                  <p className="dark:bg-zinc-800 dark:text-white text-black  ml-2 font-bold text-sm ">
+                  <p className="dark:text-white text-black  ml-2 font-bold text-sm ">
                     {custom.title}
                   </p>
                   <p className="text-gray-500 text-sm font-bold">
@@ -200,7 +200,7 @@ const MiddlePane = ({
         )}
       </div>
         <div className="flex w-full justify-center">
-      <div className="relative flex justify-end w-4/5 ">
+        <div className="relative flex justify-end w-4/5 ">
         <div className="bg-gray-100 p-2 lg:mb-2 mb-1 grow basis dark:bg-white/[.05] flex items-center rounded-md shadow-lg">
           <input
             type="text"
