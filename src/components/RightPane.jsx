@@ -49,7 +49,7 @@ const RightPane = ({setConversationId}) => {
             }
           }
         })
-        setChats(firstMessages);
+        setChats(firstMessages.reverse());
         setIsTrue(true)
         console.log("Chats state after setting:", conversationData);
       } else {

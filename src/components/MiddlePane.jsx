@@ -1,14 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, Fragment } from "react";
 import sendBtn from "../assets/send.svg";
 import userIcon from "../assets/user.png";
 import LoadingAnimation from "./LoadingAnimation";
 import Robot from "../../src/assets/Robot.json";
+import Voice from "../../src/assets/Mic.json";
 import Lottie from "lottie-react";
 import ReactMarkdown from "react-markdown";
 import Thumsup from "../../src/assets/thumsup.svg";
 import Thumsdown from "../../src/assets/thumsdown.svg";
 import FeedbackModal from "./FeedBack";
 import TypingAnimation from "./TypingAnimation";
+import { Dialog, Transition } from "@headlessui/react";
+
 const MiddlePane = ({
   chatLog,
   searchTerm,
@@ -19,6 +22,7 @@ const MiddlePane = ({
 }) => {
   const chatContainerRef = useRef(null);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     if (chatContainerRef.current) {
@@ -54,10 +58,10 @@ const MiddlePane = ({
       {chatLog.length === 0 && (
         <div className="relative top-1/4 flex flex-col h-screen items-center">
           <div className="flex ">
-            <p className = 'dark:text-white text-black text-black basis-1/3 top-1/3  relative text-lg font-bold p-3'>
-             <TypingAnimation text= "Hoow Can I help you Today ?"/>
+            <p className="dark:text-white text-black text-black basis-1/3 top-1/3  relative text-lg font-bold p-3">
+              <TypingAnimation text="Hoow Can I help you Today ?" />
             </p>
-            <div className="dark:bg-zinc-800" >
+            <div className="dark:bg-zinc-800">
               <Lottie animationData={Robot} loop={true} className="w-60" />
             </div>
           </div>
@@ -127,7 +131,7 @@ const MiddlePane = ({
                       onClick={() => setShowFeedback(true)}
                     >
                       <img
-                        src={Thumsup} 
+                        src={Thumsup}
                         className="text-white fill-current"
                         height={14}
                         width={14}
@@ -199,33 +203,85 @@ const MiddlePane = ({
           </div>
         )}
       </div>
-        <div className="flex w-full justify-center">
-        <div className="relative flex justify-end w-4/5 ">
-        <div className="bg-gray-100 p-2 lg:mb-2 mb-1 grow basis dark:bg-white/[.05] flex items-center rounded-md shadow-lg">
-          <input
-            type="text"
-            placeholder="Send your message"
-            className="dark:bg-transparent bg-gray-100 text-blue-900  focus:outline-none outline-none basis-full p-3 flex items-center dark:text-white"
-            value={searchTerm}
-            onChange={handleChange}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSend();
-              }
-            }}
-          />
-        </div>
-        <div className="flex absolute mt-4 items-center">
-          <button
-            type="submit"
-            className="flex justify-end bg-transparent border-none"
-            onClick={() => handleSend(searchTerm)}
-          >
-            <img src={sendBtn} alt="send" />
-          </button>
+      <div className="flex w-full gap-10 justify-center">
+        <div className="relative flex justify-end p-2 w-4/5">
+          <div className="bg-gray-100 p-2 lg:mb-2 mb-1 grow basis dark:bg-white/[.05] flex items-center rounded-md shadow-lg">
+            <div className="flex items-center m-2 rounded-lg dark:text-gray-100 text-black">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="size-6 cursor-pointer"
+                onClick={() => {
+                  setIsDialogOpen(true);
+                }}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M12 18.75a6 6 0 0 0 6-6v-1.5m-6 7.5a6 6 0 0 1-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 0 1-3-3V4.5a3 3 0 1 1 6 0v8.25a3 3 0 0 1-3 3Z"
+                />
+              </svg>
+            </div>
+            <input
+              type="text"
+              placeholder="Send your message"
+              className="dark:bg-transparent bg-gray-100 text-blue-900 focus:outline-none outline-none basis-full p-3 flex items-center dark:text-white"
+              value={searchTerm}
+              onChange={handleChange}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSend(searchTerm);
+                }
+              }}
+            />
+          </div>
+          <div className="flex absolute m-4 items-center">
+            <button
+              type="submit"
+              className="flex bg-transparent border-none"
+              onClick={() => handleSend(searchTerm)}
+            >
+              <img src={sendBtn} alt="send" />
+            </button>
+          </div>
         </div>
       </div>
-        </div>
+      <Transition show={isDialogOpen} as={Fragment}>
+        <Dialog
+          onClose={() => setIsDialogOpen(false)}
+          className="fixed z-10 inset-0 overflow-y-auto"
+        >
+          <div className="flex items-center justify-center h-full">
+            <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
+
+            <Transition.Child
+              as={Fragment}
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+              enterTo="opacity-100 translate-y-0 sm:scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+              leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+            >
+              <div className="relative bg-white dark:bg-gray-800 rounded w-1/3 h-1/2 flex justify-center items-center z-20">
+                <div className="flex items-center justify-center">
+                  <Lottie
+                    animationData={Voice}
+                    loop={true}
+                    className="w-40 h-40"
+                  />
+                </div>
+                <div className="mt-4 text-center dark:text-white">
+                  {isDialogOpen ? "I am listening..." : "Processing..."}
+                </div>
+              </div>
+            </Transition.Child>
+          </div>
+        </Dialog>
+      </Transition>
     </div>
   );
 };
