@@ -119,8 +119,61 @@ const listConversationHeadings = async (req, res) => {
     });
   }
 };
+
+const deleteConversation = async (req, res) => {
+  console.log('Deleting conversation...');
+  try {
+    // Extract the conversationId from the request body
+    const { conversationId } = req.body;
+
+
+    // Find the conversation by its ID
+    const conversation = await Conversations.findOne({
+      attributes: ['isDeleted', "id",
+              "userMessages",
+               "botMessages",
+               "userId",
+               "createdAt",
+               "updatedAt",],
+      where: {
+        conversationId: conversationId
+      }
+    });
+    console.log(conversation)
+
+
+    if (conversation) {
+      // Soft delete the conversation by setting the deletedAt timestamp
+      await Conversations.update(
+        { isDeleted: true },
+        {
+          where: { conversationId: conversationId }
+        }
+      );
+
+      return res.json({
+        success: true,
+        message: "The conversation has been deleted."
+      });
+    } else {
+      console.log("No conversation found with the provided ID");
+      return res.status(404).json({
+        success: false,
+        message: "Conversation not found."
+      });
+    }
+  } catch (error) {
+    console.error('Error deleting the conversation:', error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to delete the conversation."
+    });
+  }
+};
+
 module.exports = {
   getConversation,
   createConversation,
   listConversationHeadings,
+  deleteConversation
 };

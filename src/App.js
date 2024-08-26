@@ -9,6 +9,7 @@ const {
 const {
   getConversation,
   createConversation,
+  deleteConversation
 } = require("../controllers/conversation");
 
 const app = express();
@@ -26,7 +27,7 @@ app.use("/api/ai", docLoader);
 app.use("/api/addDocs", addDocumentsToPinecone);
 
 const conversation = require("../routes/conversation");
-app.use("/api/conversation/", conversation);
+app.use("/api/delete/", deleteConversation);
 
 app.use("/api/conversation/", getConversation);
 
