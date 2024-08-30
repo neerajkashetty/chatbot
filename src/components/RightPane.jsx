@@ -209,7 +209,7 @@ console.log(chats)
       {
         istrue && (
             chats.map((chat, index) => (
-              <button onClick={()=> setConversationId(1, chat.conversationid)} key={index} className="dark:hover:bg-zinc-700 hover:bg-gray-400 scroll-smooth dark:text-gray-200 text-black text-start flex flex-col w-full max-w-full rounded-lg text-sm p-2">
+              <button onClick={()=> setConversationId(1, chat.conversationid)} key={index} className="dark:hover:bg-zinc-700 hover:bg-gray-400 scroll-smooth dark:text-gray-200 text-black text-start flex  w-full max-w-full rounded-lg text-sm p-2">
                 <p>{chat.firstMessage}</p>
               </button>
             ))

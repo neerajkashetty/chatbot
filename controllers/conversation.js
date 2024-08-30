@@ -1,4 +1,3 @@
-const { where } = require("sequelize");
 const { Conversations } = require("../sequelize/models");
 
 const getConversation = async (req, res) => {
@@ -34,7 +33,7 @@ const getConversation = async (req, res) => {
     console.log("Error:", error);
     return res
       .status(500)
-      .json({ success: false, error: "Internal server error" });
+      .json({ success: false, error: "Inrnal server error" });
   }
 };
 
@@ -80,13 +79,14 @@ const createConversation = async (req, res) => {
     console.log("Error:", error);
     return res
       .status(500)
-      .json({ success: false, error: "Internal server error" });
+      .json({ success: false, error: "Interne server error" });
   }
 };
 
 const listConversationHeadings = async (req, res) => {
   try {
     const { userId } = req.query;
+   
     const conversations = await Conversations.findAll({
       where: {
         userId,
@@ -123,11 +123,8 @@ const listConversationHeadings = async (req, res) => {
 const deleteConversation = async (req, res) => {
   console.log('Deleting conversation...');
   try {
-    // Extract the conversationId from the request body
     const { conversationId } = req.body;
 
-
-    // Find the conversation by its ID
     const conversation = await Conversations.findOne({
       attributes: ['isDeleted', "id",
               "userMessages",
