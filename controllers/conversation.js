@@ -8,6 +8,7 @@ const getConversation = async (req, res) => {
       where: {
         userId,
         conversationId,
+        isDeleted : false
       },
     });
 
@@ -90,6 +91,7 @@ const listConversationHeadings = async (req, res) => {
     const conversations = await Conversations.findAll({
       where: {
         userId,
+        isDeleted: false
       },
     });
 
@@ -137,10 +139,7 @@ const deleteConversation = async (req, res) => {
       }
     });
     console.log(conversation)
-
-
     if (conversation) {
-      // Soft delete the conversation by setting the deletedAt timestamp
       await Conversations.update(
         { isDeleted: true },
         {
