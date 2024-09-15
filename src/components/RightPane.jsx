@@ -1,27 +1,25 @@
 import { Menu, Switch } from "@headlessui/react";
 import { useState, useEffect } from "react";
-import { usernameState, theme} from "../atoms/user";
+import { usernameState, theme } from "../atoms/user";
 import { useRecoilState } from "recoil";
-import axios from 'axios'
+import axios from "axios";
 
-const RightPane = ({setConversationId}) => {
+const RightPane = ({ setConversationId }) => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const Previouschats = ["What is Newtons third law", "Where is the UC main Campus", "What are the facilites availabel"]
   const [username, setUserName] = useRecoilState(usernameState);
-  const [enabled, setEnabled]  = useRecoilState(theme);
-  const [chats, setChats] = useState()
-  const [istrue, setIsTrue] = useState(false); 
+  const [enabled, setEnabled] = useRecoilState(theme);
+  const [chats, setChats] = useState();
+  const [istrue, setIsTrue] = useState(false);
 
-
-  useEffect (()=> {
+  useEffect(() => {
     const root = window.document.documentElement;
-    if(enabled){
-      root.classList.add('dark');
-    }else{
-      root.classList.remove('dark');
+    if (enabled) {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
     }
     pullConversations();
-  },[enabled])
+  }, [enabled]);
 
   const onLogOut = () => {
     localStorage.clear();
@@ -29,27 +27,30 @@ const RightPane = ({setConversationId}) => {
     setUserName("");
   };
 
- const pullConversations = async () => {
+  const pullConversations = async () => {
     try {
-      const response = await axios.get('http://localhost:3002/api/conversation/conversations-list', {
-        params: {
-          userId: 1
+      const response = await axios.get(
+        "http://localhost:3002/api/conversation/conversations-list",
+        {
+          params: {
+            userId: 1,
+          },
         }
-      });
+      );
       const conversationData = response.data.data.conversationData;
       console.log("Fetched conversation data:", conversationData);
       if (Array.isArray(conversationData)) {
-        const firstMessages = conversationData.map(conversation => {
+        const firstMessages = conversationData.map((conversation) => {
           const userMessage = conversation.userMessage;
-          if(Array.isArray(userMessage) && userMessage.length > 0){
-            return{
-              conversationid : conversation.conversationId,
-              firstMessage: userMessage[0]
-            }
+          if (Array.isArray(userMessage) && userMessage.length > 0) {
+            return {
+              conversationid: conversation.conversationId,
+              firstMessage: userMessage[0],
+            };
           }
-        })
+        });
         setChats(firstMessages.reverse());
-        setIsTrue(true)
+        setIsTrue(true);
         console.log("Chats state after setting:", conversationData);
       } else {
         console.error("Fetched data is not an array:", conversationData);
@@ -59,20 +60,19 @@ const RightPane = ({setConversationId}) => {
     }
   };
 
-
-const deleteConversation = async (conversationId) => {
-  console.log('clcid')
-  try{
-    const response = await axios.post("http://localhost:3002/api/conversation/delete-conver", {
-      conversationId
-    })
-    console.log("deleted succesfully")
-
-  }catch(error){
-    console.error("Error", error)
-  }
-  }
-
+  const deleteConversation = async (conversationId) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3002/api/conversation/delete-conver",
+        {
+          conversationId,
+        }
+      );
+      console.log("deleted succesfully");
+    } catch (error) {
+      console.error("Error", error);
+    }
+  };
 
   const handleFileInputChange = (event) => {
     const selectedFile = event.target.files[0];
@@ -92,7 +92,7 @@ const deleteConversation = async (conversationId) => {
       }
       setUploadedFiles((prevFiles) => [...prevFiles, selectedFile]);
       event.target.value = null;
-      console.log(uploadedFiles)
+      console.log(uploadedFiles);
     }
   };
 
@@ -103,30 +103,28 @@ const deleteConversation = async (conversationId) => {
     setUploadedFiles(updatedFiles);
   };
 
-
-
-
   return (
-    
     <div className="flex flex-col items-center lg:relative">
       <Menu
         as="div"
         className="dark:bg-zinc-900/100 bg-gray-400 z-50 shadow rounded-lg flex  basis-6 border-gray-300 shadow-zinc-700/100 hover:cursor-pointer"
       >
-        <div className="bg-zinc-700 shadow-md h-8 m-1 w-8 flex items-center justify-center rounded-3xl text-white text-center font-bold">N</div>
+        <div className="bg-zinc-700 shadow-md h-8 m-1 w-8 flex items-center justify-center rounded-3xl text-white text-center font-bold">
+          N
+        </div>
         <div>
           <Menu.Button className="flex font-bold  dark:text-gray-300  text-black text-sm text-left w-full p-2">
             {" "}
-           <p >{username.user}</p> 
+            <p>{username.user}</p>
           </Menu.Button>
         </div>
         <div>
           <Menu.Items className="absolute bg-zinc-800 right-0 mt-12  shadow-md shadow-zinc-700/100 w-full rounded-md">
             <div className="px-1 py-1">
-            <Menu.Item>
+              <Menu.Item>
                 <div className="flex bg-gray text-gray-300 font-semibold hover:cursor-text text-sm p-2">
-                <p >neeraj.kasheety29@gmail.com</p>
-                </div>      
+                  <p>neeraj.kasheety29@gmail.com</p>
+                </div>
               </Menu.Item>
               <hr className="border-gray-600 my-1 mt-2" />
 
@@ -204,45 +202,61 @@ const deleteConversation = async (conversationId) => {
         </div>
       </Menu>
       <div className="">
-      <Switch
-        checked={enabled}
-        onChange={setEnabled}
-        className="dark:bg-black bg-gray-900 relative inline-flex shadow-md shadow-zinc-700 rounded-lg mt-8 border-1 border-gray-300 h-5 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white/75" >
-        <span
-          aria-hidden="true"
-          className={`${enabled ? 'translate-x-7' : 'translate-x-0'}
+        <Switch
+          checked={enabled}
+          onChange={setEnabled}
+          className="dark:bg-black bg-gray-900 relative inline-flex shadow-md shadow-zinc-700 rounded-lg mt-8 border-1 border-gray-300 h-5 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus-visible:ring-2  focus-visible:ring-white/75"
+        >
+          <span
+            aria-hidden="true"
+            className={`${enabled ? "translate-x-7" : "translate-x-0"}
             pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-lg ring-0 transition duration-200 ease-in-out`}
-        />
-      </Switch>
+          />
+        </Switch>
       </div>
 
-      <div className="w-full basis-96 m-4 dark:bg-zinc-800 bg-gray-200 rounded-md shadow-md h-max overflow-hidden scroll-smooth shadow-zinc-700 border-1 border-gray-300">
-        <div className="dark:text-gray-300 text-black text-lg font-bold">Chats</div>
+      <div className="w-full m-4 dark:bg-zinc-800 bg-gray-200 rounded-md shadow-md overflow-hidden scroll-smooth shadow-zinc-700 border-1 border-gray-300">
+        <div className="dark:text-gray-300 text-black text-lg font-bold">
+          Chats
+        </div>
         <div className="w-full h-full overflow-y-scroll scroll-m-0 text-start">
-      <div className="text-sm p-1 text-black dark:text-gray-400 font-semibold">Today</div>
-      {
-        istrue && (
+          <div className="text-sm p-1 text-black dark:text-gray-400 font-semibold">
+            Today
+          </div>
+          {istrue &&
             chats.map((chat, index) => (
-              <div key={index} className="flex justify-start group dark:hover:bg-zinc-700 hover:bg-gray-400 scroll-smooth dark:text-gray-200 text-black  w-full rounded-lg text-sm p-2">
-              <button onClick={()=> setConversationId(1, chat.conversationid)}  className="w-full text-start">
-                <p>{chat.firstMessage}</p>
-              </button>
-              <button onClick={() => deleteConversation(chat.conversationid)}  className="invisible group-hover:visible text-end group-hover:fill-red-300">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-4">
-  <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-</svg>
-              </button>
-              
+              <div
+                key={index}
+                className="flex justify-start group dark:hover:bg-zinc-700 hover:bg-gray-400 scroll-smooth dark:text-gray-200 text-black  w-full rounded-lg text-sm p-2"
+              >
+                <button
+                  onClick={() => setConversationId(1, chat.conversationid)}
+                  className="w-full text-start"
+                >
+                  <p>{chat.firstMessage}</p>
+                </button>
+                <button
+                  onClick={() => deleteConversation(chat.conversationid)}
+                  className="invisible group-hover:visible text-end group-hover:fill-red-300"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="size-4"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                    />
+                  </svg>
+                </button>
               </div>
-            ))
-          )}
-      <div className="text-sm p-1 dark:text-gray-400 text-black font-semibold" >Yesterday</div>
-      {
-        Previouschats.map((chat, index)=> (
-          <button key={index} className="dark:hover:bg-zinc-700 hover:bg-gray-400 scroll-smooth dark:text-gray-200 text-black flex w-full text-start rounded-lg text-sm p-2"> {chat.userMessages}</button>
-        ))
-      }
-      </div>
+            ))}
+        </div>
       </div>
 
       <div className="flex flex-col basis-36 ">
@@ -250,41 +264,49 @@ const deleteConversation = async (conversationId) => {
           Knowledge Base
         </h2>
         <div className="rounded-md flex flex-col items-center justify-center w-56 bg-gray-200 dark:bg-zinc-800 border-1 shadow-md shadow-zinc-700 h-4/5">
-        <div>
-          <label htmlFor="fileInput" className="cursor-pointer flex items-center justify-center ">
-            <div className="p-4 rounded-md border-2  border-blue-300 h-1/12 border-dotted outline-4">
-              <div className="ml-2 flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                  className="w-4 h-4 dark:text-white font-bold"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 4.5v15m7.5-7.5h-15"
-                  />
-                </svg>
+          <div>
+            <label
+              htmlFor="fileInput"
+              className="cursor-pointer flex items-center justify-center "
+            >
+              <div className="p-4 rounded-md border-2  border-blue-300 h-1/12 border-dotted outline-4">
+                <div className="ml-2 flex items-center justify-center">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                    className="w-4 h-4 dark:text-white font-bold"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 4.5v15m7.5-7.5h-15"
+                    />
+                  </svg>
+                </div>
+                <div className="justify-start align-text-top w-16">
+                  <p className="text-xs text-center text-blue-300 font-semibold">
+                    Add files
+                  </p>
+                </div>
               </div>
-              <div className="justify-start align-text-top w-16">
-                <p className="text-xs text-center text-blue-300 font-semibold">Add files</p>
-              </div>
-            </div>
-          </label>
-          <input
-            id="fileInput"
-            type="file"
-            onChange={handleFileInputChange}
-            className="hidden"
-          />
+            </label>
+            <input
+              id="fileInput"
+              type="file"
+              onChange={handleFileInputChange}
+              className="hidden"
+            />
+          </div>
         </div>
-      </div>
-      <div className="absolute mt-36">
-        <p className="text-gray-400 text-md font-bold text-center mt-2 "> Uploaded Files</p>
-      {uploadedFiles.map((file, index) => (
+        <div className="absolute mt-36">
+          <p className="text-gray-400 text-md font-bold text-center mt-2 ">
+            {" "}
+            Uploaded Files
+          </p>
+          {uploadedFiles.map((file, index) => (
             <div key={index} className="flex ">
               <p className="flex text-xs font-bold text-gray-200 mt-4">{`${
                 index + 1
@@ -308,16 +330,10 @@ const deleteConversation = async (conversationId) => {
               </div>
             </div>
           ))}
-          </div>
+        </div>
       </div>
     </div>
   );
-
-  
 };
 
-
-
 export default RightPane;
-
-
