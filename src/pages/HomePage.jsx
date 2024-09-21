@@ -150,7 +150,6 @@ console.log(conversationId)
       />
       <div className="flex">
         <div className="lg:hidden right-2 w-8 h-8 absolute border-1 m-4 active:translate-y-1 shadow-md shadow-zinc-700/100 rounded-lg border-gray-300 ">
-          {!isRightPaneVisible && (
             <button className="m-1" onClick={toggleRightPane}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -167,26 +166,6 @@ console.log(conversationId)
                 />
               </svg>
             </button>
-          )}
-          {isRightPaneVisible && (
-            <button
-              className="relative right-20 mt-4 transform translate-x"
-              onClick={toggleRightPane}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                className="w-7 h-7 fill-color text-white"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </button>
-          )}
         </div>
       </div>
       <div
@@ -200,6 +179,7 @@ console.log(conversationId)
         <RightPane 
           chats={chats}
           setConversationId = {ConversationsOfUser}
+          toggleRightPane = {toggleRightPane}
         />
       </div>
     </div>
