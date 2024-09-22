@@ -1,8 +1,8 @@
 const express = require("express");
-const { sequelize } = require("../sequelize/models");
+const { sequelize } = require("./sequelize/models");
 const cors = require("cors");
-const { signUp, Login } = require("../controllers/userController");
-const { docLoader, addDocumentsToPinecone } = require("../controllers/docLoader");
+const { signUp, Login } = require("./controllers/userController");
+const { docLoader, addDocumentsToPinecone } = require("./controllers/docLoader");
 
 const app = express();
 app.use(express.json());
@@ -14,10 +14,10 @@ app.use("/api/ai", docLoader);
 app.use("/api/addDocs", addDocumentsToPinecone);
 
 // Import and use the conversation router
-const conversation = require("../routes/conversation");
+const conversation = require("./routes/conversation");
 app.use("/api/conversation/", conversation);
 
-const verify = require("../routes/verifyRoute");
+const verify = require("./routes/verifyRoute");
 app.use("/api/user", verify);
 
 const connectDB = async () => {

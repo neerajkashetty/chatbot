@@ -40,6 +40,7 @@ const RightPane = ({ setConversationId , toggleRightPane}) => {
       const conversationData = response.data.data.conversationData;
       console.log("Fetched conversation data:", conversationData);
       if (Array.isArray(conversationData)) {
+        // eslint-disable-next-line
         const firstMessages = conversationData.map((conversation) => {
           const userMessage = conversation.userMessage;
           if (Array.isArray(userMessage) && userMessage.length > 0) {
@@ -68,7 +69,7 @@ const RightPane = ({ setConversationId , toggleRightPane}) => {
           conversationId,
         }
       );
-      console.log("deleted succesfully");
+      console.log("deleted succesfully", response);
     } catch (error) {
       console.error("Error", error);
     }
