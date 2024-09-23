@@ -6,7 +6,7 @@ const { docLoader, addDocumentsToPinecone } = require("./controllers/docLoader")
 
 const app = express();
 app.use(express.json());
-app.use(cors({origin: 'https://chatbot-beige-omega.vercel.app/'}));
+app.use(cors({origin: 'https://chatbot-beige-omega.vercel.app'}));
 
 app.use("/api/signUp", signUp);
 app.use("/api/Login", Login);
@@ -32,5 +32,6 @@ const connectDB = async () => {
 
 (async () => {
   await connectDB();
+  app.get("/", (req, res) => res.send("Express on Vercel"));
   app.listen(3002, () => console.log("Server running on the port", 3002));
 })();
