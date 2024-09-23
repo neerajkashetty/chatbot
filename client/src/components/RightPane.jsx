@@ -30,7 +30,7 @@ const RightPane = ({ setConversationId , toggleRightPane}) => {
   const pullConversations = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3002/api/conversation/conversations-list",
+        "https://chatbot-bi74-19dy8rsi6-neerajkashettys-projects.vercel.app/api/conversation/conversations-list",
         {
           params: {
             userId: 1,
