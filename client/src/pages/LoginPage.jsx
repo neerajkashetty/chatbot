@@ -16,7 +16,7 @@ const LoginPage = () => {
     async (data) => {
       try {
         if (data && data.email && data.password) {
-          const response = await axios.post("https://chatbot-bi74-19dy8rsi6-neerajkashettys-projects.vercel.app/api/Login", {
+          const response = await axios.post("https://chatbot-bi74.vercel.app/api/Login", {
             email: data.email,
             password: data.password,
           });

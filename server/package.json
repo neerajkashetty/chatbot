@@ -51,7 +51,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start-backend": "nodemon index.js"
+    "start": "nodemon index.js"
   },
   "eslintConfig": {
     "extends": [
