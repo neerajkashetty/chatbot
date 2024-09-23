@@ -20,18 +20,18 @@ app.use("/api/conversation/", conversation);
 const verify = require("./routes/verifyRoute");
 app.use("/api/user", verify);
 
-const connectDB = async () => {
-  try {
-    await sequelize.authenticate();
-    console.log("Successfully connected to database.");
-  } catch (error) {
-    console.log("An error occurred while connecting to the database, \n", error);
-    process.exit(1);
-  }
-};
+// const connectDB = async () => {
+//   try {
+//     await sequelize.authenticate();
+//     console.log("Successfully connected to database.");
+//   } catch (error) {
+//     console.log("An error occurred while connecting to the database, \n", error);
+//     process.exit(1);
+//   }
+// };
 
 (async () => {
-  await connectDB();
+ // await connectDB();
   app.get("/", (req, res) => res.send("Express on Vercel"));
   app.listen(3002, () => console.log("Server running on the port", 3002));
 })();
