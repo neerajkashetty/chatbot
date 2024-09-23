@@ -6,7 +6,7 @@ const { docLoader, addDocumentsToPinecone } = require("./controllers/docLoader")
 
 const app = express();
 app.use(express.json());
-app.use(cors());
+app.use(cors({origin: 'https://chatbot-beige-omega.vercel.app/'}));
 
 app.use("/api/signUp", signUp);
 app.use("/api/Login", Login);
