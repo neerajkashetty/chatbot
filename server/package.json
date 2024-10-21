@@ -51,7 +51,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "api/index.js"
+    "start": "index.js"
   },
   "eslintConfig": {
     "extends": [
