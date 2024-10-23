@@ -9,44 +9,51 @@ const signUp = async (req, res) => {
   try {
     const { firstName, lastName, email, password } = req.body;
 
+    console.log("Received sign-up request with body:", req.body); // Debugging
+
     const username = generateFromEmail(email, 4);
 
-    const user = await User.findOne({
-      where: {
-        email: email,
-      },
-    });
+    // Check if user already exists
+    const user = await User.findOne({ where: { email: email } });
 
     if (user) {
-      return res.status(404).json({ error: "Email Already taken" });
+      return res.status(409).json({ error: "Email already taken" });
     }
 
+    // Load private key for JWT
     const privateKey = fs.readFileSync("./jwtRS256.key", "utf-8");
 
+    if (!privateKey) {
+      return res.status(500).json({ error: "JWT private key missing" });
+    }
+
+    // Hash the password
     const saltRounds = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
+    // Create user data
     const data = {
       firstName,
       lastName,
-      username: username, //commit
+      username,
       email,
       password: hashedPassword,
     };
 
     const usertable = await User.create(data);
-    console.log(usertable);
 
     if (usertable) {
-      let token = JWT.sign({ id: usertable.id }, privateKey, {
-        expiresIn: "1hr",
+      // Generate JWT token
+      const token = JWT.sign({ id: usertable.id }, privateKey, {
+        expiresIn: "1h", // Correct format for 1 hour
         algorithm: "RS256",
       });
 
-      res.cookie("jwt", token, { maxAge: 1 * 24 * 60 * 60, httpOnly: true });
+      // Set the cookie
+      res.cookie("jwt", token, { maxAge: 24 * 60 * 60 * 1000, httpOnly: true });
 
       return res.json({
-        sucess: true,
+        success: true,
         data: {
           firstName,
           lastName,
@@ -55,10 +62,11 @@ const signUp = async (req, res) => {
         },
       });
     } else {
-      return res.status(409).send("Details are not correct");
+      return res.status(400).json({ error: "User creation failed" });
     }
   } catch (error) {
-    console.log("error is ", error);
+    console.error("Error occurred during sign-up:", error);
+    return res.status(500).json({ error: "Server error" });
   }
 };
 
