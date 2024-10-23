@@ -1,8 +1,11 @@
-const express = require("express");
-const app = express();
+const express = require("express")
+const bodyParser = require("body-parser")
+const app = express()
 
-app.get("/", (req, res) => res.send("Express on Vercel"));
+app.use(bodyParser.json())
 
-app.listen(3000, () => console.log("Server ready on port 3000."));
+app.get("/", (req, res) => res.send("Express on Vercel"))
 
-module.exports = app;
+app.listen(3000, () => console.log("Server ready on port 3000."))
+
+module.exports = app
