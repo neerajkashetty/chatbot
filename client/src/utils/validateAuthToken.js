@@ -4,7 +4,7 @@ export const validateAuthToken = (userToken) => {
   console.log("dwfwf", userToken);
   return new Promise((resolve, reject) => {
     axios
-      .get("http://localhost:3002/api/user/verify", {
+      .get("https://chatbot-ij0f.onrender.com/api/user/verify", {
         headers: {
           "Content-type": "application/json",
           authorization: userToken,

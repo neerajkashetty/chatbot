@@ -3,13 +3,13 @@ import axios from "axios";
 import RightPane from "../components/RightPane";
 import LeftPane from "../components/LeftPane";
 import MiddlePane from "../components/MiddlePane";
-import { v4 as uuid } from 'uuid';
+import { v4 as uuid } from "uuid";
 import { useParams, useNavigate } from "react-router-dom";
 
 const Home = () => {
   const { conversationId: paramConversationId } = useParams();
   const navigate = useNavigate();
-  
+
   const [chatLog, setChatLog] = useState([]);
   const [searchTerm, setSearchTerm] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,10 +39,7 @@ const Home = () => {
       // Trigger delayed chatbot response
       setIsLoading(true);
       delayedChatbotResponse(messageToSend);
-      setChats((prevChats) => [
-        messageToSend,
-        ...prevChats.reverse()
-      ]);
+      setChats((prevChats) => [messageToSend, ...prevChats.reverse()]);
     }
   };
 
@@ -58,18 +55,24 @@ const Home = () => {
   };
 
   const delayedChatbotResponse = async (messageToSend) => {
-    const response = await axios.post("http://localhost:3002/api/ai", {
-      userInput: messageToSend,
-    });
+    const response = await axios.post(
+      "https://chatbot-ij0f.onrender.com/api/ai",
+      {
+        userInput: messageToSend,
+      }
+    );
 
     const botMessages = response.data.response;
 
-    const conversation = await axios.post("http://localhost:3002/api/conversation/conversations-new", {
-      userId: "1",
-      userMessage: messageToSend,
-      botMessage: botMessages,
-      conversationId: conversationId
-    });
+    const conversation = await axios.post(
+      "https://chatbot-ij0f.onrender.com/conversation/conversations-new",
+      {
+        userId: "1",
+        userMessage: messageToSend,
+        botMessage: botMessages,
+        conversationId: conversationId,
+      }
+    );
     console.log(conversation);
 
     const sources = getSources(response.data.sources);
@@ -86,10 +89,13 @@ const Home = () => {
     const combinedChatLog = [];
 
     try {
-      const response = await axios.post("http://localhost:3002/api/conversation/conversations", {
-        userId,
-        conversationId,
-      });
+      const response = await axios.post(
+        "https://chatbot-ij0f.onrender.com/api/conversation/conversations",
+        {
+          userId,
+          conversationId,
+        }
+      );
 
       const conversations = response.data.data;
 
@@ -97,7 +103,10 @@ const Home = () => {
         conversations.userMessages.forEach((userMessage, index) => {
           combinedChatLog.push({ type: "user", message: userMessage });
           if (conversations.botMessages[index]) {
-            combinedChatLog.push({ type: "bot", message: conversations.botMessages[index] });
+            combinedChatLog.push({
+              type: "bot",
+              message: conversations.botMessages[index],
+            });
           }
         });
 
@@ -133,7 +142,7 @@ const Home = () => {
     setConversationId(newConversationId);
     navigate(`/home/${newConversationId}`);
   }, [chatLog, navigate]);
-console.log(conversationId)
+  console.log(conversationId);
   return (
     <div className="dark:bg-zinc-800 bg-white text-black relative h-screen w-full flex overflow-x-hidden overflow-y-hidden">
       <MiddlePane
@@ -150,22 +159,22 @@ console.log(conversationId)
       />
       <div className="flex">
         <div className="lg:hidden right-2 w-8 h-8 absolute border-1 m-4 active:translate-y-1 shadow-md shadow-zinc-700/100 rounded-lg border-gray-300 ">
-            <button className="m-1" onClick={toggleRightPane}>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-6 h-6 fill-current text-white"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5"
-                />
-              </svg>
-            </button>
+          <button className="m-1" onClick={toggleRightPane}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className="w-6 h-6 fill-current text-white"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3.75 5.25h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5m-16.5 4.5h16.5"
+              />
+            </svg>
+          </button>
         </div>
       </div>
       <div
@@ -176,10 +185,10 @@ console.log(conversationId)
             : "absolute right-0 top-0 flex flex-col h-screen p-8 dark:border-1 dark:bg-zinc-900 bg-white lg:translate-x-1 lg:relative transition-all delay-300 duration-500 translate-x-full"
         }`}
       >
-        <RightPane 
+        <RightPane
           chats={chats}
-          setConversationId = {ConversationsOfUser}
-          toggleRightPane = {toggleRightPane}
+          setConversationId={ConversationsOfUser}
+          toggleRightPane={toggleRightPane}
         />
       </div>
     </div>
