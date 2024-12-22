@@ -15,13 +15,10 @@ const LoginPage = () => {
     async (data) => {
       try {
         if (data && data.email && data.password) {
-          const response = await axios.post(
-            "https://chatbot-ij0f.onrender.com/api/Login",
-            {
-              email: data.email,
-              password: data.password,
-            }
-          );
+          const response = await axios.post("http://localhost:3002/api/Login", {
+            email: data.email,
+            password: data.password,
+          });
           console.log(response);
 
           if (response.data.sucess) {

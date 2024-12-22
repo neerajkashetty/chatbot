@@ -11,14 +11,11 @@ const RegisterPage = () => {
   const onSubmit = useCallback(
     async (data) => {
       try {
-        const response = await axios.post(
-          "https://chatbot-ij0f.onrender.com/api/signUp",
-          {
-            firstName: data.firstName,
-            email: data.email,
-            password: data.password,
-          }
-        );
+        const response = await axios.post("http://localhost:3002/api/signUp", {
+          firstName: data.firstName,
+          email: data.email,
+          password: data.password,
+        });
 
         if (response.status === 200) {
           navigate("/login");

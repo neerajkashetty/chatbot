@@ -11,10 +11,7 @@ module.exports = {
     host: DATABASE_HOST,
     dialect: "postgres",
     dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false, // disable certificate validation in production if required
-      },
+      ssl: false,
     },
   },
   test: {

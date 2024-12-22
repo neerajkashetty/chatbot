@@ -9,7 +9,7 @@ const {
 
 const app = express();
 app.use(express.json());
-app.use(cors({ origin: "https://chatbot-beige-omega.vercel.app" }));
+app.use(cors({ origin: "http://localhost:3000" }));
 
 app.use("/api/signUp", signUp);
 app.use("/api/Login", Login);

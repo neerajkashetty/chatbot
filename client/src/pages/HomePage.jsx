@@ -55,17 +55,14 @@ const Home = () => {
   };
 
   const delayedChatbotResponse = async (messageToSend) => {
-    const response = await axios.post(
-      "https://chatbot-ij0f.onrender.com/api/ai",
-      {
-        userInput: messageToSend,
-      }
-    );
+    const response = await axios.post("http://localhost:3002/api/ai", {
+      userInput: messageToSend,
+    });
 
     const botMessages = response.data.response;
 
     const conversation = await axios.post(
-      "https://chatbot-ij0f.onrender.com/conversation/conversations-new",
+      "http://localhost:3002/api/conversation/conversations-new",
       {
         userId: "1",
         userMessage: messageToSend,
@@ -90,7 +87,7 @@ const Home = () => {
 
     try {
       const response = await axios.post(
-        "https://chatbot-ij0f.onrender.com/api/conversation/conversations",
+        "http://localhost:3002/api/conversation/conversations",
         {
           userId,
           conversationId,
